@@ -1,0 +1,12 @@
+// Cloudflare serves the built site as static files, exactly as `npm run build` leaves them in dist/.
+// Without this file, Cloudflare's build guesses a setup of its own and adds an Astro adapter on every deploy.
+// Custom domains are managed in the Cloudflare dashboard, so none are listed here.
+{
+  "name": "mist-consultancy",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    // Missing pages get the site's own 404.html, with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}

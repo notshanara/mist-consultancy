@@ -101,7 +101,7 @@ Markup hooks handled by `motion.ts`:
 ## Still to connect before launch
 
 - **Contact form:** copy `.env.example` to `.env` and set `PUBLIC_FORM_ENDPOINT` (for example a Formspree URL). Until then the form validates but sends nothing. For spam protection, set `PUBLIC_TURNSTILE_SITE_KEY` and put the secret key in the form provider's settings.
-- **Hosting:** `netlify.toml` and the generated `_headers` file are for Netlify. Other hosts may ignore `_headers`, which would leave the site without its security headers, so port them and run `npm run security:live` to confirm.
+- **Hosting:** the site runs on Cloudflare as the `mist-consultancy` Worker, at mistconsultancy.co.uk and www. Cloudflare rebuilds and deploys it on every push to `main` on GitHub, using `wrangler.jsonc`. Cloudflare reads the generated `_headers` file, and so does Netlify (`netlify.toml`). Other hosts may ignore it, which would leave the site without its security headers, so port them and run `npm run security:live` to confirm. Two protections are dashboard settings on the domain, not files: **Always Use HTTPS** is on, and **Minimum TLS Version** is 1.2 (both under SSL/TLS, Edge Certificates).
 - **Domain:** `site` in `astro.config.mjs` is a placeholder until the domain is confirmed.
 - **Logo:** `src/components/Logo.astro` holds a vector traced from the supplied JPEG. Replace it with the original artwork.
 - **Privacy notice:** `src/pages/privacy.astro` has bracketed items to complete and needs legal review. Remove its draft note afterwards.

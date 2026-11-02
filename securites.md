@@ -123,7 +123,7 @@ In [src/components/ContactForm.astro](src/components/ContactForm.astro).
 
 ### 8. Nothing private is published
 
-- [netlify.toml](netlify.toml) publishes `dist/` only.
+- [wrangler.jsonc](wrangler.jsonc) publishes `dist/` only on Cloudflare, and [netlify.toml](netlify.toml) does the same on Netlify.
 - 57 development, backup, repository and admin paths were requested and none is served, including `.env`, `.git`, `.idea`, `src/` and `package.json`.
 - The careless control host did serve files like these, so the check can catch them.
 - No source maps, HTML comments, generator tags, local paths, internal IPs or secret-shaped strings in the build.
@@ -135,7 +135,7 @@ In [src/components/ContactForm.astro](src/components/ContactForm.astro).
 
 ### 10. Own error page
 
-[src/pages/404.astro](src/pages/404.astro) is new. It returns a real 404, repeats nothing from the request and reveals nothing about the host.
+[src/pages/404.astro](src/pages/404.astro) is new. It returns a real 404, repeats nothing from the request and reveals nothing about the host. On Cloudflare, `not_found_handling` in [wrangler.jsonc](wrangler.jsonc) serves it; without that setting, missing pages come back blank.
 
 ### 11. No cookies, browser storage or third parties
 
@@ -177,7 +177,7 @@ These can apply, or a scanner may report them, and I left them as they are delib
 | Generic Email Address Disclosure | The brief requires the published addresses and phone number. Expect some spam. |
 | Possible CSRF | The form has no token. There is no session to forge, and abuse is handled by Turnstile and the provider. A scanner may still flag it. |
 | Sensitive pages could be cached | Every page is public, with no personal data in any response. |
-| Reverse Proxy / WAF Detected, `Server: Netlify` | Inherent to the host. It names no version. |
+| Reverse Proxy / WAF Detected, `Server: cloudflare` | Inherent to the host. It names no version. |
 | default-src Used in CSP | Information only, raised because the directive is present. `'none'` plus specific directives follows Invicti's own advice, but the alert may still appear. |
 | HSTS `preload` left out | Invicti recommends it but does not flag its absence. It is hard to undo, so decide once the domain and all its subdomains are known. |
 | Client-side form limits can be bypassed | A script can post straight to the provider. Only the provider's settings and Turnstile stop that. |
