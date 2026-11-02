@@ -193,7 +193,7 @@ I think this is worth it to reduce spam, but it adds one outside script.
 
 ## What this does not prove
 
-- **Host behaviour:** 21 of the 109 checks depend on the real host, such as redirects, TLS, traversal and HTTP methods. Here they ran against my simulated host, so they show the tests work, not that Netlify behaves this way. Run `security:live` after deployment.
+- **Host behaviour:** 21 of the 109 checks depend on the real host, such as redirects, TLS, traversal and HTTP methods. Here they ran against my simulated host, so they show the tests work. `security:live` against the live domain on Cloudflare (2 November 2026) passed 46 of 47; the one failure is the contact form, which has no endpoint yet.
 - **Not tested at all:**
   - request smuggling
   - HTTP/2 cache poisoning
@@ -203,8 +203,8 @@ I think this is worth it to reduce spam, but it adds one outside script.
 
 ## Before launch
 
-1. **Host:** deploy to Netlify, which reads `_headers`. Cloudflare Pages uses the same file format, but I have not tested it. Vercel and others ignore that file, so the headers would need porting. On those hosts, **the site would otherwise have no Content Security Policy at all**, and `security:live` would fail.
-2. **Check the live site** with `security:live`, then run the domain through [SSL Labs](https://www.ssllabs.com/ssltest/) for the cipher-level findings. Only run `security:live` against a site you own, because it sends attack-shaped requests.
+1. **Host:** done. The site runs on Cloudflare, which reads `_headers`, and every header arrives on the live domain. Plain HTTP redirects to HTTPS and TLS 1.0 and 1.1 are refused, through the dashboard settings in the README. If the site moves to a host that ignores `_headers`, such as Vercel, the headers need porting, or **the site would have no Content Security Policy at all**.
+2. **Check the live site:** `security:live` is done (see above). Still to do: run the domain through [SSL Labs](https://www.ssllabs.com/ssltest/) for the cipher-level findings. Only run `security:live` against a site you own, because it sends attack-shaped requests.
 3. **Form provider:** set `PUBLIC_FORM_ENDPOINT`, restrict the form to your domain, turn on spam protection, and check that submissions show as plain text.
 4. **Turnstile:** set the site key, put the secret key in the provider's settings, and have the added privacy wording reviewed.
 5. **Domain:** confirm every subdomain supports HTTPS before going live, because `includeSubDomains` applies to all of them. Remove any unused DNS records to prevent subdomain takeover, and set up SPF, DKIM and DMARC for the published addresses.
