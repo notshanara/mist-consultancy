@@ -1,0 +1,67 @@
+---
+import TonalEdge from './TonalEdge.astro';
+
+interface Props {
+  title: string;
+  lead: string;
+}
+const { title, lead } = Astro.props;
+
+const ratio = 0.66;
+const tones = ['text-gunmetal', 'text-iron', 'text-slate', 'text-pale', 'text-white'];
+---
+
+<section class="hero bg-carbon text-white" data-scrub="leave">
+  <svg class="field" viewBox="-114 -107 228 214" aria-hidden="true">
+    {
+      tones.map((tone, i) => (
+        <g class={`layer i-${i}`}>
+          <path class={tone} fill="currentColor" transform={`scale(${ratio ** i})`} d="M-13.9-106.4H113.7V9.7L12.3 106.4H-113.7V-12Z" />
+        </g>
+      ))
+    }
+  </svg>
+  <div class="copy wrap">
+    <h1 class="intro mx-auto max-w-[18ch] text-display">{title}</h1>
+    <p class="intro mx-auto mt-6 max-w-[42ch] text-lead text-pale i-1">{lead}</p>
+    <slot />
+  </div>
+</section>
+<TonalEdge />
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .copy {
+    position: relative;
+    padding-top: clamp(3.5rem, 9svh, 7rem);
+    padding-bottom: clamp(13rem, 32svh, 20rem);
+  }
+
+  /* The mist layers rise from the bottom edge, and open out as the page scrolls on. */
+  .field {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: clamp(20rem, 44vw, 38rem);
+    transform: translate(-50%, 30%) scale(calc(1 + var(--p, 0) * 0.5));
+    overflow: visible;
+    transform-origin: center;
+  }
+
+  :global(html.motion) .layer {
+    animation: layer-in 1.5s var(--ease) both;
+    animation-delay: calc(0.15s + var(--i) * 0.1s);
+  }
+
+  @keyframes layer-in {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.84);
+    }
+  }
+</style>

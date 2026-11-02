@@ -1,0 +1,120 @@
+---
+import Mark from './Mark.astro';
+
+interface Props {
+  stops: string[];
+  beyond: string;
+}
+const { stops, beyond } = Astro.props;
+const count = stops.length + 1;
+---
+
+<ol class={`stops n-${count}`} data-scrub="through" data-scrub-from="0.95" data-scrub-to="0.62">
+  {
+    stops.map((stop, i) => (
+      <li class={`stop i-${i}`}>
+        <span class:list={['line', { 'line-dashed': i === stops.length - 1 }]} aria-hidden="true" />
+        <span class="node">
+          <Mark class="block h-[1.625rem] w-7" />
+        </span>
+        <span class="label">{stop}</span>
+      </li>
+    ))
+  }
+  <li class={`stop stop-beyond i-${count - 1}`}>
+    <span class="node">
+      <Mark class="block h-[1.625rem] w-7" />
+    </span>
+    <span class="label">{beyond}</span>
+  </li>
+</ol>
+
+<style>
+  .stops {
+    display: grid;
+    gap: 2rem;
+    text-align: left;
+  }
+
+  .stop {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    gap: 1rem;
+    align-items: center;
+    font-weight: 500;
+  }
+
+  .line {
+    position: absolute;
+    top: 1.625rem;
+    bottom: -2rem;
+    left: 0.875rem;
+    width: 1px;
+    background: var(--color-blue);
+    transform: scaleY(clamp(0, calc(var(--p, 1) * var(--n) - var(--i)), 1));
+    transform-origin: top;
+  }
+
+  /* The route carries on, dashed, past the sectors Mist starts with. */
+  .line-dashed {
+    background: repeating-linear-gradient(to bottom, var(--color-slate) 0 5px, transparent 5px 11px);
+  }
+
+  .node {
+    display: block;
+    background: var(--color-white);
+    opacity: clamp(0, calc(var(--p, 1) * var(--n) - var(--i) + 0.6), 1);
+    transition: opacity 0.2s linear;
+  }
+
+  .stop-beyond .node {
+    color: var(--color-slate);
+    fill: none;
+  }
+
+  .stop-beyond :global(svg) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 12px;
+    overflow: visible;
+  }
+
+  @media (min-width: 768px) {
+    .stops {
+      grid-template-columns: repeat(var(--n), 1fr);
+      gap: 0;
+    }
+
+    .stop {
+      display: block;
+      padding-right: 1.5rem;
+    }
+
+    .line {
+      top: 0.8125rem;
+      right: 0;
+      bottom: auto;
+      left: 2.5rem;
+      width: auto;
+      height: 1px;
+      transform: scaleX(clamp(0, calc(var(--p, 1) * var(--n) - var(--i)), 1));
+      transform-origin: left;
+    }
+
+    .line-dashed {
+      background: repeating-linear-gradient(to right, var(--color-slate) 0 5px, transparent 5px 11px);
+    }
+
+    .node {
+      display: inline-block;
+    }
+
+    .label {
+      display: block;
+      margin-top: 1.25rem;
+      font-size: 1.125rem;
+      line-height: 1.3;
+    }
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+import { reasons } from '../data/content';
+
+// Bands stack up the screen in palette order as they are scrolled, each leaving its title showing.
+const tones = [
+  'bg-carbon text-white',
+  'bg-gunmetal text-white',
+  'bg-iron text-white',
+  'bg-slate text-carbon',
+  'bg-pale text-carbon',
+  'bg-white text-carbon',
+];
+---
+
+<section id="why" aria-labelledby="why-title">
+  <div class="wrap pt-[clamp(5rem,3rem+8vw,10rem)] pb-[clamp(3rem,5vw,5rem)] text-center">
+    <h2 id="why-title" class="text-title" data-reveal>Why businesses work with MIST.</h2>
+  </div>
+
+  <ol class="stack">
+    {
+      reasons.map((reason, i) => (
+        <li class:list={['band', tones[i], `i-${i}`]}>
+          <div class="wrap">
+            <h3 class="strip text-subheading">{reason.name}</h3>
+            <p class="body text-statement">{reason.text}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .stack {
+    --strip: 3.25rem;
+  }
+
+  .band {
+    --cut: 1.25rem;
+    position: sticky;
+    top: calc(var(--nav-h) + var(--i) * var(--strip));
+    min-height: 62svh;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% 100%, 0 100%, 0 var(--cut));
+  }
+
+  /* Only cut corners that show the band before, not the page behind the stack. */
+  .band:first-child {
+    clip-path: none;
+  }
+
+  .strip {
+    display: flex;
+    align-items: center;
+    height: var(--strip);
+  }
+
+  .body {
+    max-width: 24ch;
+    padding-block: clamp(1.5rem, 5vw, 3.5rem) 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .stack {
+      --strip: 4rem;
+    }
+
+    .band {
+      min-height: 66svh;
+    }
+  }
+</style>

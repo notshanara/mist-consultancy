@@ -1,0 +1,4 @@
+# Publishing only dist/ is itself a protection: nothing else in this folder can be reached from the web.
+[build]
+  command = "npm run build"
+  publish = "dist"

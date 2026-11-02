@@ -1,0 +1,149 @@
+---
+import { moatParts } from '../data/content';
+
+// Five parts of the toolkit, drawn as the same nested mark used across the site.
+const ratio = 0.72;
+const tones = ['fill-carbon', 'fill-iron', 'fill-slate', 'fill-pale', 'fill-white'];
+---
+
+<section id="moat" class="section-y bg-gunmetal text-white" data-moat aria-labelledby="moat-title">
+  <div class="wrap">
+    <div class="mx-auto max-w-[46rem] text-center">
+      <h2 id="moat-title" class="text-title" data-reveal>MOAT.</h2>
+      <p class="mt-2 font-medium text-pale i-1" data-reveal>MIST Operations Assessment Toolkit</p>
+      <p class="mt-6 text-lead i-2" data-reveal>
+        The toolkit behind MIST's layer approach and methodology. It keeps our work structured, consistent and grounded in evidence, so you get a clear picture of how your operation really performs and where focus is needed.
+      </p>
+    </div>
+
+    <div class="layout">
+      <svg class="rings" viewBox="-114 -107 228 214" aria-hidden="true">
+        {
+          tones.map((tone, i) => (
+            <path class:list={['ring', tone]} transform={`scale(${ratio ** i})`} d="M-13.9-106.4H113.7V9.7L12.3 106.4H-113.7V-12Z" />
+          ))
+        }
+      </svg>
+
+      <ol class="parts">
+        {
+          moatParts.map((part, i) => (
+            <li>
+              <button type="button" class="part" aria-pressed={i === 0 ? 'true' : 'false'}>
+                <span class="block text-subheading">{part.name}</span>
+                <span class="mt-1.5 block text-pale">{part.text}</span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .rings {
+    display: block;
+    width: min(100%, 18rem);
+    margin-inline: auto;
+    overflow: visible;
+  }
+
+  /* Once a part is chosen the layers fall back to two quiet tones, and the chosen one turns white. */
+  .rings:global(.has-active) .ring {
+    fill: var(--color-carbon);
+    transition: fill 0.45s ease;
+  }
+
+  .rings:global(.has-active) .ring:nth-child(even) {
+    fill: var(--color-iron);
+  }
+
+  .rings:global(.has-active) .ring:global(.on) {
+    fill: var(--color-white);
+  }
+
+  .parts {
+    border-top: 1px solid var(--color-slate);
+  }
+
+  .parts li {
+    border-bottom: 1px solid var(--color-slate);
+  }
+
+  .part {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 1.125rem 0 1.125rem 1.25rem;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .part::before {
+    content: '';
+    position: absolute;
+    inset: 1.125rem auto 1.125rem 0;
+    width: 3px;
+    background: var(--color-white);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .part[aria-pressed='true']::before {
+    transform: none;
+  }
+
+  .part:focus-visible {
+    outline-offset: -3px;
+  }
+
+  @media (min-width: 1024px) {
+    .layout {
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 2rem;
+      align-items: center;
+    }
+
+    .rings {
+      grid-column: 1 / 6;
+      width: 100%;
+      max-width: 30rem;
+    }
+
+    .parts {
+      grid-column: 7 / 13;
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-moat]');
+
+  if (section) {
+    const rings = section.querySelector('.rings');
+    const ringList = [...section.querySelectorAll('.ring')];
+    const parts = [...section.querySelectorAll<HTMLButtonElement>('.part')];
+
+    const show = (index: number) => {
+      rings?.classList.add('has-active');
+      ringList.forEach((ring, i) => ring.classList.toggle('on', i === index));
+      parts.forEach((part, i) => part.setAttribute('aria-pressed', String(i === index)));
+    };
+
+    parts.forEach((part, i) => {
+      part.addEventListener('click', () => show(i));
+      part.addEventListener('pointerenter', () => show(i));
+      part.addEventListener('focus', () => show(i));
+    });
+
+    show(0);
+  }
+</script>

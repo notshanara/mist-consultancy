@@ -1,0 +1,51 @@
+---
+import CtaBand from '../components/CtaBand.astro';
+import Gallery from '../components/Gallery.astro';
+import HomeHero from '../components/HomeHero.astro';
+import Numbers from '../components/Numbers.astro';
+import ReasonStack from '../components/ReasonStack.astro';
+import RouteStops from '../components/RouteStops.astro';
+import ServiceTiles from '../components/ServiceTiles.astro';
+import StageExplorer from '../components/StageExplorer.astro';
+import { industries } from '../data/content';
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="MIST Consultancy | Operational assessment and improvement"
+  footnote="Diagrams and examples on this page are illustrative. They do not describe a specific client or result."
+>
+  <HomeHero />
+
+  <section id="overview" class="section-y bg-white pt-[clamp(3rem,9svh,6rem)]! text-center" aria-labelledby="overview-title">
+    <div class="wrap">
+      <h2 id="overview-title" class="font-medium text-iron">What we do</h2>
+      <p class="mx-auto mt-5 max-w-[26ch] text-statement" data-words>
+        We help businesses understand how their operations work, identify where time, money and resources are being lost,
+        and make practical improvements.
+      </p>
+      <p class="mx-auto mt-10 max-w-[58ch] text-lead text-iron" data-reveal>
+        Our work combines <strong class="text-carbon">operational analysis</strong>, <strong class="text-carbon">process improvement</strong>, <strong class="text-carbon">technology and automation</strong> where appropriate, and <strong class="text-carbon">implementation support</strong>. We are an independent consultancy, not a software vendor, and we do more than identify problems. We work towards solving them.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-y bg-white pt-0! text-center" aria-labelledby="who-title">
+    <div class="wrap">
+      <h2 id="who-title" class="text-title" data-reveal>Starting in transport and logistics.</h2>
+      <p class="mx-auto mt-5 max-w-[46ch] text-lead text-iron i-1" data-reveal>
+        With an approach designed to work for any operations-led business.
+      </p>
+      <div class="mt-12 lg:mt-16">
+        <RouteStops stops={industries} beyond="Any operations-led business" />
+      </div>
+    </div>
+  </section>
+
+  <Gallery />
+  <StageExplorer />
+  <ServiceTiles />
+  <Numbers />
+  <ReasonStack />
+  <CtaBand />
+</Base>

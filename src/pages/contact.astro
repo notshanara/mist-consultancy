@@ -1,0 +1,48 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+import Base from '../layouts/Base.astro';
+
+const details = [
+  { label: 'Enquiries', value: site.email.enquiries, href: `mailto:${site.email.enquiries}` },
+  { label: 'Telephone', value: site.phone.display, href: site.phone.href },
+  { label: 'General', value: site.email.general, href: `mailto:${site.email.general}` },
+];
+---
+
+<Base
+  title="Contact | MIST Consultancy"
+  description="Arrange an initial conversation with MIST Consultancy to discuss your operational challenges."
+>
+  <PageHero
+    title="Arrange an initial conversation"
+    lead="Tell us about the operational challenges you are dealing with. We will start by understanding your business, your objectives and your areas of concern."
+  />
+
+  <section class="section-y">
+    <div class="wrap grid gap-y-14 lg:grid-cols-12 lg:gap-x-8">
+      <div class="lg:col-span-4">
+        <h2 class="text-heading" data-reveal>Talk to us directly</h2>
+        <dl class="mt-8 border-t border-pale" data-reveal-group>
+          {
+            details.map((detail) => (
+              <div class="border-b border-pale py-4" data-reveal>
+                <dt class="text-sm font-medium text-iron">{detail.label}</dt>
+                <dd class="mt-0.5">
+                  <a href={detail.href} class="font-medium break-words underline-offset-4 hover:underline">{detail.value}</a>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="lg:col-span-7 lg:col-start-6" data-reveal>
+        <h2 class="text-heading">Send us a message</h2>
+        <div class="mt-8">
+          <ContactForm />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

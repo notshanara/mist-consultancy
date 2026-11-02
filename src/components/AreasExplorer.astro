@@ -1,0 +1,210 @@
+---
+import { assessmentAreas } from '../data/content';
+
+// One point per area, every point connected to every other: the operation as one connected system.
+const centre = 240;
+const radius = 214;
+const points = assessmentAreas.map((_, i) => {
+  const angle = (i / assessmentAreas.length) * 2 * Math.PI - Math.PI / 2;
+  return { x: +(centre + radius * Math.cos(angle)).toFixed(1), y: +(centre + radius * Math.sin(angle)).toFixed(1) };
+});
+const chords = points.flatMap((a, i) => points.slice(i + 1).map((b, j) => ({ a, b, from: i, to: i + 1 + j })));
+const mark = 'M-1 -7H7.5V.6L.8 7H-7.5V-.8Z';
+---
+
+<section id="assess" class="section-y bg-carbon text-white" data-areas aria-labelledby="assess-title">
+  <div class="wrap">
+    <div class="mx-auto max-w-[46rem] text-center">
+      <h2 id="assess-title" class="text-title" data-reveal>What we assess.</h2>
+      <p class="mt-5 text-lead text-pale i-1" data-reveal>
+        We look at the operation as one connected business system. Scope is tailored to each client, and not every client goes through every area.
+      </p>
+    </div>
+
+    <div class="layout">
+      <svg class="mesh" viewBox="0 0 480 480" aria-hidden="true">
+        {chords.map((chord) => <line class="chord" pathLength="1" x1={chord.a.x} y1={chord.a.y} x2={chord.b.x} y2={chord.b.y} data-from={chord.from} data-to={chord.to} />)}
+        {points.map((point) => <path class="point" d={mark} transform={`translate(${point.x} ${point.y}) scale(1.5)`} />)}
+      </svg>
+
+      <div class="list">
+        {
+          assessmentAreas.map((area, i) => (
+            <details class="area" name="area" open={i === 0}>
+              <summary>
+                <span class="text-subheading">{area.name}</span>
+                <span class="plus" />
+              </summary>
+              <div class="detail">
+                <p class="max-w-[48ch] text-pale">{area.detail}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .mesh {
+    display: block;
+    width: min(100%, 18rem);
+    margin-inline: auto;
+    overflow: visible;
+  }
+
+  .chord {
+    stroke: var(--color-gunmetal);
+    stroke-width: 1;
+    stroke-dasharray: 1;
+    transition: stroke 0.4s ease;
+  }
+
+  .chord:global(.on) {
+    stroke: var(--color-pale);
+  }
+
+  :global(html.motion) .chord:global(.on) {
+    animation: chord-draw 0.9s var(--ease) both;
+  }
+
+  @keyframes chord-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .point {
+    fill: var(--color-slate);
+    transition: fill 0.3s ease;
+  }
+
+  .point:global(.on) {
+    fill: var(--color-white);
+  }
+
+  .area {
+    border-bottom: 1px solid var(--color-iron);
+  }
+
+  .area:first-child {
+    border-top: 1px solid var(--color-iron);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:focus-visible {
+    outline-offset: -2px;
+  }
+
+  summary .plus {
+    width: 1.75rem;
+    height: 1.75rem;
+    background: var(--color-gunmetal);
+    color: var(--color-white);
+  }
+
+  summary:hover .plus {
+    background: var(--color-iron);
+  }
+
+  .area[open] summary > .plus {
+    --turn: 45deg;
+    background: var(--color-pale);
+    color: var(--color-carbon);
+  }
+
+  .detail {
+    padding-bottom: 1.25rem;
+  }
+
+  /* Browsers that can animate to a natural height do, and the rest simply open. */
+  :global(html.motion) .area {
+    interpolate-size: allow-keywords;
+  }
+
+  :global(html.motion) .area::details-content {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.6s var(--ease), content-visibility 0.6s allow-discrete;
+  }
+
+  :global(html.motion) .area[open]::details-content {
+    height: auto;
+  }
+
+  @media (max-width: 639.98px) {
+    .mesh {
+      display: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .layout {
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 2rem;
+      align-items: start;
+    }
+
+    .mesh {
+      position: sticky;
+      top: calc(var(--nav-h) + 3rem);
+      grid-column: 1 / 6;
+      width: 100%;
+      max-height: calc(100svh - var(--nav-h) - 6rem);
+    }
+
+    .list {
+      grid-column: 7 / 13;
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-areas]');
+
+  if (section) {
+    const areas = [...section.querySelectorAll<HTMLDetailsElement>('.area')];
+    const points = [...section.querySelectorAll<SVGPathElement>('.point')];
+    const chords = [...section.querySelectorAll<SVGLineElement>('.chord')];
+
+    const show = (index: number) => {
+      points.forEach((point, i) => point.classList.toggle('on', i === index));
+      chords.forEach((chord) => {
+        chord.classList.toggle('on', Number(chord.dataset.from) === index || Number(chord.dataset.to) === index);
+      });
+    };
+
+    const current = () => areas.findIndex((area) => area.open);
+
+    areas.forEach((area, i) => {
+      area.addEventListener('toggle', () => show(current()));
+      area.addEventListener('pointerenter', () => show(i));
+      area.addEventListener('pointerleave', () => show(current()));
+    });
+
+    show(current());
+  }
+</script>

@@ -1,0 +1,73 @@
+---
+import Arrow from './Arrow.astro';
+---
+
+<section class="section-y bg-pale" aria-labelledby="method-title">
+  <div class="wrap text-center">
+    <h2 id="method-title" class="text-title" data-reveal>Structured. Consistent. Grounded in evidence.</h2>
+    <p class="mx-auto mt-6 max-w-[52ch] text-lead i-1" data-reveal>
+      MOAT, the MIST Operations Assessment Toolkit, is behind every assessment. It gives you <strong>a clear picture of how your operation really performs</strong> and <strong>where to focus first</strong>.
+    </p>
+
+    <dl class="stats" data-reveal-group>
+      <div data-reveal>
+        <dt>connected stages</dt>
+        <dd data-count="3">3</dd>
+      </div>
+      <div data-reveal>
+        <dt>steps from discovery to review</dt>
+        <dd data-count="5">5</dd>
+      </div>
+      <div data-reveal>
+        <dt>areas we can assess</dt>
+        <dd data-count="10">10</dd>
+      </div>
+      <div data-reveal>
+        <dt>scoring, only where the evidence supports it</dt>
+        <dd>1&ndash;5</dd>
+      </div>
+    </dl>
+
+    <a href="/approach/#moat" class="link mt-12" data-reveal>See how MOAT works <Arrow /></a>
+  </div>
+</section>
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem 1rem;
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .stats > div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+  }
+
+  dd {
+    color: var(--color-navy);
+    font-size: clamp(3.5rem, 2rem + 6vw, 7rem);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  dt {
+    max-width: 20ch;
+    margin: 0.75rem auto 0;
+    line-height: 1.35;
+  }
+
+  @media (min-width: 768px) {
+    .stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stats > div + div {
+      border-left: 1px solid var(--color-navy);
+    }
+  }
+</style>

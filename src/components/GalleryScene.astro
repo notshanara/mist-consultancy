@@ -1,0 +1,413 @@
+---
+// Small looping line diagrams, standing in for photography in the highlights gallery.
+// Each one is complete without animation, and only runs while its tile is the current one.
+interface Props {
+  name: string;
+  label: string;
+}
+const { name, label } = Astro.props;
+
+const mark = 'M-1 -7H7.5V.6L.8 7H-7.5V-.8Z';
+const boxes = [
+  { x: 20, label: 'Job sheet' },
+  { x: 174, label: 'System' },
+  { x: 328, label: 'Spreadsheet' },
+];
+const ticks = [198, 232, 266, 300, 334, 368, 402];
+const bars = [
+  { x: 100, height: 150, label: 'Depot', tone: 'fill-slate' },
+  { x: 204, height: 104, label: 'Finance', tone: 'fill-pale' },
+  { x: 308, height: 128, label: 'Customer', tone: 'fill-white' },
+];
+const people = [
+  { x: 155, y: 48, label: 'Planning', lx: 155, ly: 30 },
+  { x: 325, y: 48, label: 'Dispatch', lx: 325, ly: 30 },
+  { x: 410, y: 128, label: 'Drivers', lx: 410, ly: 106 },
+  { x: 325, y: 208, label: 'Customers', lx: 325, ly: 236 },
+  { x: 155, y: 208, label: 'Finance', lx: 155, ly: 236 },
+  { x: 70, y: 128, label: 'Suppliers', lx: 70, ly: 106 },
+];
+---
+
+<svg class="scene" viewBox="0 0 480 270" role="img" aria-label={label}>
+  {
+    name === 'keyed' && (
+      <>
+        {boxes.map((box, b) => (
+          <g>
+            <text class="label" x={box.x + 66} y="52" text-anchor="middle">{box.label}</text>
+            <path class="frame" d={`M${box.x + 10} 66H${box.x + 132}V196L${box.x + 122} 206H${box.x}V76Z`} />
+            {[84, 64, 92].map((width, l) => (
+              <rect class={`entry k${b + 1} n-${l}`} x={box.x + 18} y={94 + l * 30} width={width} height="8" />
+            ))}
+          </g>
+        ))}
+        <path class="hop" d="M152 136H174M306 136H328" />
+        <path class="chip" d={mark} transform="translate(163 136)" />
+        <text class="note" x="240" y="244" text-anchor="middle">Same job. Entered three times.</text>
+      </>
+    )
+  }
+  {
+    name === 'invoice' && (
+      <>
+        <text class="label" x="300" y="100" text-anchor="middle">Waiting on paperwork</text>
+        <path class="solid" d="M50 135H170" />
+        <path class="dashed" d="M170 135H430" />
+        {ticks.map((x, i) => <path class={`tick n-${i}`} d={`M${x} 127V143`} />)}
+        <g class="fill-pale">
+          <path d={mark} transform="translate(50 135) scale(1.4)" />
+          <path d={mark} transform="translate(170 135) scale(1.4)" />
+          <path d={mark} transform="translate(430 135) scale(1.4)" />
+        </g>
+        <text class="label" x="50" y="172" text-anchor="middle">Delivered</text>
+        <text class="label" x="170" y="172" text-anchor="middle">Proof of delivery</text>
+        <text class="label" x="430" y="172" text-anchor="middle">Invoice</text>
+        <g class="token-travel"><path class="fill-white" d={mark} transform="scale(1.4)" /></g>
+        <text class="note" x="240" y="232" text-anchor="middle">The work is done. The invoice is not.</text>
+      </>
+    )
+  }
+  {
+    name === 'empty' && (
+      <>
+        <text class="label" x="40" y="72">Vehicle 1</text>
+        <path class="solid" d="M40 92H180M300 92H440" />
+        <path class="dashed" d="M180 92H300" />
+        <g class="van van-1"><path class="fill-white" d={mark} transform="scale(1.3)" /></g>
+        <text class="label" x="40" y="140">Vehicle 2</text>
+        <path class="solid" d="M130 160H250" />
+        <path class="dashed" d="M40 160H130M250 160H440" />
+        <g class="van van-2"><path class="fill-white" d={mark} transform="scale(1.3)" /></g>
+        <path class="solid" d="M130 222H170" />
+        <text class="label" x="178" y="227">Laden</text>
+        <path class="dashed" d="M256 222H296" />
+        <text class="label" x="304" y="227">Empty</text>
+      </>
+    )
+  }
+  {
+    name === 'kpi' && (
+      <>
+        <text class="note" x="240" y="38" text-anchor="middle">On-time delivery</text>
+        {bars.map((bar, i) => (
+          <>
+            <rect class={`bar ${bar.tone} n-${i}`} x={bar.x} y={218 - bar.height} width="72" height={bar.height} />
+            <text class="label" x={bar.x + 36} y="244" text-anchor="middle">{bar.label}</text>
+          </>
+        ))}
+        <path class="solid" d="M70 218H410" />
+      </>
+    )
+  }
+  {
+    name === 'person' && (
+      <>
+        {people.map((person, i) => (
+          <>
+            <path class="spoke" d={`M${person.x} ${person.y}L240 128`} />
+            <path class={`pulse n-${i}`} pathLength="100" d={`M${person.x} ${person.y}L240 128`} />
+            <path class="fill-pale" d={mark} transform={`translate(${person.x} ${person.y}) scale(1.2)`} />
+            <text class="label optional" x={person.lx} y={person.ly} text-anchor="middle">{person.label}</text>
+          </>
+        ))}
+        <g transform="translate(240 128)">
+          <path class="busy fill-white" d={mark} transform="scale(3)" />
+        </g>
+        <text class="note" x="240" y="178" text-anchor="middle">One person</text>
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .scene {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .label {
+    font-size: 15px;
+    font-weight: 500;
+    fill: var(--color-pale);
+  }
+
+  .note {
+    font-size: 17px;
+    font-weight: 500;
+    fill: var(--color-white);
+  }
+
+  .frame,
+  .hop,
+  .spoke {
+    fill: none;
+    stroke: var(--color-slate);
+    stroke-width: 1.5;
+  }
+
+  .solid {
+    fill: none;
+    stroke: var(--color-pale);
+    stroke-width: 2;
+  }
+
+  .dashed {
+    fill: none;
+    stroke: var(--color-pale);
+    stroke-width: 2;
+    stroke-dasharray: 3 8;
+  }
+
+  .tick {
+    stroke: var(--color-pale);
+    stroke-width: 1.5;
+  }
+
+  .entry {
+    fill: var(--color-pale);
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+
+  .chip {
+    fill: var(--color-white);
+  }
+
+  .token-travel {
+    transform: translate(430px, 135px);
+  }
+
+  .van-1 {
+    transform: translate(240px, 92px);
+  }
+
+  .van-2 {
+    transform: translate(190px, 160px);
+  }
+
+  .bar {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+  }
+
+  .pulse {
+    fill: none;
+    stroke: var(--color-white);
+    stroke-width: 2.5;
+    stroke-dasharray: 12 200;
+    stroke-dashoffset: 12;
+  }
+
+  .busy {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  @media (max-width: 640px) {
+    .label {
+      font-size: 19px;
+    }
+
+    .note {
+      font-size: 21px;
+    }
+
+    .optional {
+      display: none;
+    }
+  }
+
+  :global(html.motion .is-active) .k1 {
+    animation: entry-1 6.4s var(--ease-io) infinite backwards;
+    animation-delay: calc(var(--n) * 0.1s);
+  }
+
+  :global(html.motion .is-active) .k2 {
+    animation: entry-2 6.4s var(--ease-io) infinite backwards;
+    animation-delay: calc(var(--n) * 0.1s);
+  }
+
+  :global(html.motion .is-active) .k3 {
+    animation: entry-3 6.4s var(--ease-io) infinite backwards;
+    animation-delay: calc(var(--n) * 0.1s);
+  }
+
+  @keyframes entry-1 {
+    0% {
+      transform: scaleX(0);
+    }
+    14%,
+    92% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+
+  @keyframes entry-2 {
+    0%,
+    28% {
+      transform: scaleX(0);
+    }
+    42%,
+    92% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+
+  @keyframes entry-3 {
+    0%,
+    56% {
+      transform: scaleX(0);
+    }
+    70%,
+    92% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+
+  :global(html.motion .is-active) .chip {
+    animation: chip 6.4s var(--ease-io) infinite;
+  }
+
+  @keyframes chip {
+    0%,
+    17% {
+      transform: translate(92px, 136px);
+      opacity: 0;
+    }
+    21% {
+      opacity: 1;
+    }
+    26%,
+    44% {
+      transform: translate(163px, 136px);
+      opacity: 1;
+    }
+    54%,
+    90% {
+      transform: translate(317px, 136px);
+      opacity: 1;
+    }
+    96%,
+    100% {
+      transform: translate(317px, 136px);
+      opacity: 0;
+    }
+  }
+
+  :global(html.motion .is-active) .tick {
+    animation: tick 6.4s linear infinite backwards;
+    animation-delay: calc(0.9s + var(--n) * 0.55s);
+  }
+
+  @keyframes tick {
+    0% {
+      opacity: 0.15;
+    }
+    5%,
+    60% {
+      opacity: 1;
+    }
+    70%,
+    100% {
+      opacity: 0.15;
+    }
+  }
+
+  :global(html.motion .is-active) .token-travel {
+    animation: travel 6.4s linear infinite;
+  }
+
+  @keyframes travel {
+    0% {
+      transform: translate(50px, 135px);
+    }
+    12% {
+      transform: translate(170px, 135px);
+    }
+    88%,
+    100% {
+      transform: translate(430px, 135px);
+    }
+  }
+
+  :global(html.motion .is-active) .van-1 {
+    animation: van-1 6s linear infinite;
+  }
+
+  :global(html.motion .is-active) .van-2 {
+    animation: van-2 6s linear infinite;
+    animation-delay: -2.2s;
+  }
+
+  @keyframes van-1 {
+    from {
+      transform: translate(40px, 92px);
+    }
+    to {
+      transform: translate(440px, 92px);
+    }
+  }
+
+  @keyframes van-2 {
+    from {
+      transform: translate(40px, 160px);
+    }
+    to {
+      transform: translate(440px, 160px);
+    }
+  }
+
+  :global(html.motion .is-active) .bar {
+    animation: bar 6s var(--ease) infinite backwards;
+    animation-delay: calc(var(--n) * 0.18s);
+  }
+
+  @keyframes bar {
+    0% {
+      transform: scaleY(0);
+    }
+    24%,
+    90% {
+      transform: scaleY(1);
+    }
+    100% {
+      transform: scaleY(0);
+    }
+  }
+
+  :global(html.motion .is-active) .pulse {
+    animation: pulse 3.6s linear infinite backwards;
+    animation-delay: calc(var(--n) * 0.6s);
+  }
+
+  @keyframes pulse {
+    0% {
+      stroke-dashoffset: 12;
+    }
+    30%,
+    100% {
+      stroke-dashoffset: -100;
+    }
+  }
+
+  :global(html.motion .is-active) .busy {
+    animation: busy 1.2s ease-in-out infinite;
+  }
+
+  @keyframes busy {
+    50% {
+      transform: scale(1.07);
+    }
+  }
+</style>

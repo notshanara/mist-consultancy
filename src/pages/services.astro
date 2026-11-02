@@ -1,0 +1,47 @@
+---
+import AreasExplorer from '../components/AreasExplorer.astro';
+import CtaBand from '../components/CtaBand.astro';
+import PageHero from '../components/PageHero.astro';
+import ScopeSelector from '../components/ScopeSelector.astro';
+import StageMeter from '../components/StageMeter.astro';
+import { services } from '../data/content';
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Our Services | MIST Consultancy"
+  description="Operational assessments, process improvement, technology and systems, and implementation support. Engage MIST for an assessment alone or for a wider engagement."
+>
+  <PageHero
+    title="Our services"
+    lead="You can engage MIST for an assessment alone, or for a wider engagement covering solution design and implementation."
+  />
+
+  <div id="offer" class="section-y">
+    <div class="wrap space-y-[clamp(5rem,3rem+7vw,9rem)]">
+      {
+        services.map((service) => (
+          <section id={service.id} class="grid gap-y-8 lg:grid-cols-12 lg:gap-x-8" aria-labelledby={`${service.id}-heading`}>
+            <div class="self-start lg:sticky lg:top-[calc(var(--nav-h)+3rem)] lg:col-span-5">
+              <p class="text-title text-slate" aria-hidden="true" data-reveal>{service.letter}</p>
+              <h2 id={`${service.id}-heading`} class="mt-3 text-heading i-1" data-reveal>{service.name}</h2>
+              <div class="mt-6">
+                <StageMeter stage={service.stage} />
+              </div>
+            </div>
+            <div class="lg:col-span-6 lg:col-start-7">
+              <p class="text-heading" data-words data-words-from="0.9" data-words-to="0.62">{service.summary}</p>
+              <ul class="mt-8 border-t border-pale" data-reveal-group>
+                {service.items.map((item) => <li class="border-b border-pale py-4 text-lead text-iron" data-reveal>{item}</li>)}
+              </ul>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+
+  <ScopeSelector />
+  <AreasExplorer />
+  <CtaBand />
+</Base>

@@ -1,0 +1,15 @@
+---
+import Arrow from './Arrow.astro';
+
+interface Props {
+  href: string;
+  tone?: 'dark' | 'light';
+  class?: string;
+}
+const { href, tone = 'dark', class: className } = Astro.props;
+---
+
+<a href={href} class:list={['btn', tone === 'dark' ? 'btn-dark' : 'btn-light', className]}>
+  <slot />
+  <Arrow />
+</a>

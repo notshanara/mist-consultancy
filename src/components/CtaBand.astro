@@ -1,0 +1,26 @@
+---
+import Button from './Button.astro';
+import { site } from '../data/site';
+---
+
+<div aria-hidden="true">
+  <div class="h-1 bg-pale md:h-1.5"></div>
+  <div class="h-2 bg-slate md:h-3"></div>
+</div>
+<section class="section-y bg-iron text-center text-white" aria-labelledby="cta-heading">
+  <div class="wrap">
+    <h2 id="cta-heading" class="text-title" data-reveal>Start with a conversation.</h2>
+    <p class="mx-auto mt-6 max-w-[44ch] text-lead i-1" data-reveal>
+      Tell us where you think time, money or capacity is being lost. We will start by understanding your business and
+      what you want to achieve.
+    </p>
+    <div class="mt-9 i-2" data-reveal>
+      <Button href="/contact/" tone="light">Arrange an initial conversation</Button>
+    </div>
+    <ul class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-1 i-3" data-reveal>
+      <li><a href={`mailto:${site.email.enquiries}`} class="break-words underline-offset-4 hover:underline">{site.email.enquiries}</a></li>
+      <li><a href={site.phone.href} class="underline-offset-4 hover:underline">{site.phone.display}</a></li>
+    </ul>
+  </div>
+</section>
+<div aria-hidden="true" class="h-5 bg-gunmetal md:h-7"></div>

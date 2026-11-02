@@ -1,0 +1,11 @@
+---
+// The shape from the Mist logo, on its own. Decorative wherever it is used.
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<svg viewBox="0 0 227.4 212.8" fill="currentColor" aria-hidden="true" class={className}>
+  <path d="M99.8 0H227.4V116.1L126 212.8H0V94.4Z" />
+</svg>

@@ -1,0 +1,78 @@
+---
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+import Base from '../layouts/Base.astro';
+
+const sections = [
+  {
+    title: 'Who we are',
+    body: [`${site.name}. [Registered name, company number and address to be confirmed.]`],
+  },
+  {
+    title: 'What we collect',
+    body: [
+      'When you use our contact form we collect your name, company, business email address, telephone number if you give it, and your message. If you email or call us, we receive your contact details and what you tell us.',
+    ],
+  },
+  {
+    title: 'How we use it',
+    body: [
+      'We use your details to respond to your enquiry and to discuss possible work with you. We do not sell your personal data. [Lawful basis to be confirmed.]',
+    ],
+  },
+  {
+    title: 'Who we share it with',
+    body: ['[Form-handling, email and hosting providers to be confirmed.] These providers process data on our behalf.'],
+  },
+  {
+    title: 'How long we keep it',
+    body: ['[Retention period to be confirmed.]'],
+  },
+  {
+    title: 'Your rights',
+    body: [
+      'Under UK data protection law you can ask to access, correct or delete your personal data, and you can object to or restrict how we use it. To do so, contact us using the details below. You can also complain to the Information Commissioner’s Office at ico.org.uk.',
+    ],
+  },
+  {
+    title: 'Cookies and analytics',
+    body: [
+      'This version of the website does not set cookies or use analytics. If analytics are added, they will run only with your consent, and this notice will be updated.',
+      ...(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+        ? ['Our contact form uses Cloudflare Turnstile to block automated spam. Cloudflare processes technical information about your browser and connection for that purpose. [Wording and lawful basis to be confirmed.]']
+        : []),
+    ],
+  },
+];
+---
+
+<Base title="Privacy and cookies | MIST Consultancy" description="How MIST Consultancy handles personal data and cookies.">
+  <PageHero title="Privacy and cookies" lead="How we handle the information you share with us." />
+
+  <section class="section-y">
+    <div class="wrap grid gap-y-12 lg:grid-cols-12 lg:gap-x-8">
+      <p class="self-start border-l-2 border-carbon pl-4 font-medium lg:col-span-4">
+        Draft for review. This notice has not yet been confirmed by MIST or reviewed for legal compliance, and items in
+        square brackets still need completing.
+      </p>
+      <div class="lg:col-span-7 lg:col-start-6">
+        <div class="space-y-10">
+          {
+            sections.map((section) => (
+              <div>
+                <h2 class="text-subheading">{section.title}</h2>
+                {section.body.map((paragraph) => <p class="mt-3 max-w-[62ch] text-iron">{paragraph}</p>)}
+              </div>
+            ))
+          }
+          <div>
+            <h2 class="text-subheading">Contact</h2>
+            <p class="mt-3 text-iron">
+              <a href={`mailto:${site.email.general}`} class="underline underline-offset-2">{site.email.general}</a> or <a href={site.phone.href} class="underline underline-offset-2">{site.phone.display}</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

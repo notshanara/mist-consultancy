@@ -1,0 +1,357 @@
+@import "tailwindcss";
+
+/* Stagger and count values as classes, because the Content Security Policy rules out style attributes. */
+@utility i-* {
+  --i: --value(integer);
+}
+
+@utility n-* {
+  --n: --value(integer);
+}
+
+@source inline("i-{0..9} n-{0..9}");
+
+@theme {
+  /* Tailwind's default colours are removed, so only the Mist palette can be used in class names.
+     The names run darkest to lightest. Carbon, gunmetal and iron take white text; slate and pale take carbon. */
+  --color-*: initial;
+  --color-carbon: #000000;
+  --color-gunmetal: #2d3126;
+  --color-iron: #59614b;
+  --color-slate: #9e9b88;
+  --color-pale: #e3d5c5;
+  --color-white: #ffffff;
+
+  /* Accents, used sparingly. Navy carries text and fills on white or pale; blue is only for lines, dots and
+     progress on white or carbon. Neither is strong enough on the middle tones. */
+  --color-navy: #0a3c6e;
+  --color-blue: #1783c1;
+
+  /* Gilroy for headings once its licensed file is added (see README). Until then they fall back to Manrope. */
+  --font-display: "Mist Gilroy", "Manrope Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+
+  --text-display: clamp(2.5rem, 1rem + 5.2vw, 5.75rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 600;
+
+  --text-title: clamp(2.25rem, 1.5rem + 3.2vw, 4.5rem);
+  --text-title--line-height: 1.06;
+  --text-title--letter-spacing: -0.03em;
+  --text-title--font-weight: 600;
+
+  --text-statement: clamp(1.75rem, 1.05rem + 3vw, 3.75rem);
+  --text-statement--line-height: 1.14;
+  --text-statement--letter-spacing: -0.028em;
+  --text-statement--font-weight: 600;
+
+  --text-heading: clamp(1.75rem, 1.4rem + 1.5vw, 2.875rem);
+  --text-heading--line-height: 1.12;
+  --text-heading--letter-spacing: -0.025em;
+  --text-heading--font-weight: 600;
+
+  --text-subheading: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --text-subheading--line-height: 1.25;
+  --text-subheading--letter-spacing: -0.015em;
+  --text-subheading--font-weight: 600;
+
+  --text-lead: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.01em;
+}
+
+:root {
+  --nav-h: 3.25rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --cut: 0.625rem;
+}
+
+@utility wrap {
+  width: 100%;
+  max-width: 86rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility section-y {
+  padding-block: clamp(5rem, 3rem + 8vw, 10rem);
+}
+
+/* Cuts the top-left and bottom-right corners, the outline of the Mist mark. */
+@utility chamfer {
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+
+@layer base {
+  html {
+    background: var(--color-carbon);
+    color-scheme: light;
+    scroll-padding-top: calc(var(--nav-h) + 1.5rem);
+    scrollbar-gutter: stable;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    overflow-x: clip;
+    background: var(--color-white);
+    color: var(--color-carbon);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* The heading sizes take the heading face. Small labels marked up as headings stay in the body face. */
+  .text-display,
+  .text-title,
+  .text-statement,
+  .text-heading,
+  .text-subheading {
+    font-family: var(--font-display);
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.9375rem 1.5rem;
+    font-weight: 500;
+    line-height: 1.25;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.4s var(--ease);
+    cursor: pointer;
+  }
+
+  .btn svg {
+    flex: none;
+    transition: transform 0.4s var(--ease);
+  }
+
+  .btn:hover svg {
+    transform: translateX(0.3rem);
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  /* The clip path would cut off an outer outline, so the focus ring sits inside the button. */
+  .btn:focus-visible {
+    outline-offset: -6px;
+  }
+
+  .btn-dark {
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+
+  .btn-dark:hover {
+    background: var(--color-carbon);
+  }
+
+  .btn-light {
+    background: var(--color-pale);
+    color: var(--color-carbon);
+  }
+
+  .btn-light:hover {
+    background: var(--color-white);
+  }
+
+  /* An outline that keeps the chamfered corners: the frame is the button, and its fill sits 1px inside. */
+  .btn-outline {
+    --inner: calc(var(--cut) - 0.41px);
+    position: relative;
+    isolation: isolate;
+    background: var(--color-pale);
+    color: var(--color-white);
+  }
+
+  .btn-outline::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    z-index: -1;
+    background: var(--color-carbon);
+    clip-path: polygon(var(--inner) 0, 100% 0, 100% calc(100% - var(--inner)), calc(100% - var(--inner)) 100%, 0 100%, 0 var(--inner));
+    transition: background-color 0.25s ease;
+  }
+
+  .btn-outline:hover::before {
+    background: var(--color-navy);
+  }
+
+  .btn-sm {
+    --cut: 0.5rem;
+    padding: 0.4375rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+  }
+
+  .link svg {
+    flex: none;
+    transition: transform 0.4s var(--ease);
+  }
+
+  .link:hover svg {
+    transform: translateX(0.3rem);
+  }
+
+  /* The "+" button that opens a detail sheet. */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.5rem 0.5rem 0.5rem 1.125rem;
+    background: var(--color-carbon);
+    color: var(--color-white);
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: left;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.25s ease;
+    cursor: pointer;
+  }
+
+  .pill:hover {
+    background: var(--color-iron);
+  }
+
+  .pill:focus-visible {
+    outline-offset: -5px;
+  }
+
+  .plus {
+    position: relative;
+    display: block;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    background: var(--color-pale);
+    color: var(--color-carbon);
+  }
+
+  /* Only the cross turns, with --turn saying how far. The square behind it stays put. */
+  .plus::before,
+  .plus::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.875rem;
+    height: 2px;
+    background: currentColor;
+    transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
+    transition: transform 0.5s var(--ease);
+  }
+
+  .plus::after {
+    transform: translate(-50%, -50%) rotate(calc(var(--turn, 0deg) + 90deg));
+  }
+
+  :is(a, button, summary):hover > .plus {
+    --turn: 90deg;
+  }
+}
+
+/* Without JavaScript the mobile menu button cannot work, so the links are simply shown. */
+/* Everything below only runs when the visitor has not asked for reduced motion. */
+html.motion {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+html.motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.75rem);
+  transition: opacity 1s var(--ease), transform 1s var(--ease);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+html.motion [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+html.motion [data-words] .w {
+  color: var(--dim, var(--color-iron));
+  transition: color 0.45s ease;
+}
+
+html.motion [data-words] .w.on {
+  color: inherit;
+}
+
+/* The page opening: text comes into focus as if through mist. */
+html.motion .intro {
+  animation: intro 1.2s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 0.1s);
+}
+
+@keyframes intro {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+    filter: blur(8px);
+  }
+}
+
+[data-offscreen],
+[data-offscreen] * {
+  animation-play-state: paused !important;
+}
+
+@media print {
+  html.motion [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  html.motion [data-words] .w {
+    color: inherit !important;
+  }
+}

@@ -1,0 +1,171 @@
+---
+// A sheet that slides up over a blurred page, for detail that would otherwise crowd a chapter.
+// Open it from any link or button with data-modal="<id>". Links keep working without JavaScript.
+interface Props {
+  id: string;
+  title: string;
+  kicker?: string;
+}
+const { id, title, kicker } = Astro.props;
+---
+
+<dialog id={id} class="sheet" aria-labelledby={`${id}-title`}>
+  <div class="panel">
+    <button type="button" class="close" data-modal-close aria-label="Close">
+      <span class="plus"></span>
+    </button>
+    {kicker && <p class="mb-3 pr-14 text-pale">{kicker}</p>}
+    <h2 id={`${id}-title`} class="max-w-[20ch] pr-14 text-title">{title}</h2>
+    <div class="mt-8 lg:mt-10">
+      <slot />
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  .sheet {
+    --cut: 2rem;
+    position: fixed;
+    inset: auto 0 0;
+    width: min(100%, 60rem);
+    max-width: none;
+    max-height: 90svh;
+    margin: auto auto 0;
+    padding: 0;
+    overflow: auto;
+    border: 0;
+    background: var(--color-carbon);
+    color: var(--color-white);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% 100%, 0 100%, 0 var(--cut));
+  }
+
+  .sheet::backdrop {
+    background: color-mix(in srgb, var(--color-carbon) 60%, transparent);
+    backdrop-filter: blur(14px);
+  }
+
+  .sheet .panel {
+    padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 6vw, 4.5rem);
+  }
+
+  .sheet .close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    display: block;
+    cursor: pointer;
+  }
+
+  .sheet .close .plus {
+    --turn: 45deg;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--color-gunmetal);
+    color: var(--color-white);
+  }
+
+  .sheet .close:hover > .plus {
+    --turn: 135deg;
+    background: var(--color-iron);
+  }
+
+  .sheet .sheet-list {
+    border-top: 1px solid var(--color-iron);
+  }
+
+  .sheet .sheet-list > li {
+    padding-block: 0.9375rem;
+    border-bottom: 1px solid var(--color-iron);
+    color: var(--color-pale);
+  }
+
+  html:has(.sheet[open]) {
+    overflow: hidden;
+  }
+
+  html.motion .sheet[open] {
+    animation: sheet-in 0.7s var(--ease) both;
+  }
+
+  html.motion .sheet[open]::backdrop {
+    animation: backdrop-in 0.5s ease both;
+  }
+
+  html.motion .sheet.is-closing {
+    animation: sheet-out 0.26s ease-in both;
+  }
+
+  html.motion .sheet.is-closing::backdrop {
+    animation: backdrop-out 0.26s ease-in both;
+  }
+
+  @keyframes sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes sheet-out {
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes backdrop-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes backdrop-out {
+    to {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  import { motionOk } from '../scripts/motion';
+
+  const close = (dialog: HTMLDialogElement) => {
+    if (!motionOk) {
+      dialog.close();
+      return;
+    }
+    dialog.classList.add('is-closing');
+    window.setTimeout(() => {
+      dialog.classList.remove('is-closing');
+      dialog.close();
+    }, 260);
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element;
+
+    const opener = target.closest<HTMLElement>('[data-modal]');
+    if (opener) {
+      const dialog = document.getElementById(opener.dataset.modal ?? '');
+      if (dialog instanceof HTMLDialogElement) {
+        event.preventDefault();
+        dialog.showModal();
+      }
+      return;
+    }
+
+    const closer = target.closest('[data-modal-close]');
+    if (closer) {
+      close(closer.closest('dialog') as HTMLDialogElement);
+      return;
+    }
+
+    // A click on the dialog itself, rather than its panel, landed on the backdrop.
+    if (target instanceof HTMLDialogElement && target.open) close(target);
+  });
+
+  document.querySelectorAll<HTMLDialogElement>('dialog.sheet').forEach((dialog) => {
+    dialog.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      close(dialog);
+    });
+  });
+</script>

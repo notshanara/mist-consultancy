@@ -1,0 +1,218 @@
+---
+import Arrow from './Arrow.astro';
+import { site } from '../data/site';
+
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+
+const fields = [
+  { name: 'name', label: 'Name', type: 'text', autocomplete: 'name', required: true, max: 120, error: 'Enter your name.' },
+  { name: 'company', label: 'Company', type: 'text', autocomplete: 'organization', required: true, max: 160, error: 'Enter your company name.' },
+  { name: 'email', label: 'Business email', type: 'email', autocomplete: 'email', required: true, max: 254, error: 'Enter a valid business email address.' },
+  { name: 'telephone', label: 'Telephone', type: 'tel', autocomplete: 'tel', required: false, max: 32, error: '' },
+];
+---
+
+<form id="enquiry" method="post" action={endpoint || undefined} data-endpoint={endpoint} class="grid gap-6 sm:grid-cols-2">
+  {
+    fields.map((field) => (
+      <div class="field">
+        <label for={field.name} class="font-medium">
+          {field.label}
+          {!field.required && <span class="font-normal text-iron"> (optional)</span>}
+        </label>
+        <input
+          id={field.name}
+          name={field.name}
+          type={field.type}
+          autocomplete={field.autocomplete}
+          required={field.required}
+          maxlength={field.max}
+          data-error={field.error}
+          aria-describedby={field.required ? `${field.name}-error` : undefined}
+          class="control"
+        />
+        {field.required && <p id={`${field.name}-error`} class="error" hidden />}
+      </div>
+    ))
+  }
+
+  <div class="field sm:col-span-2">
+    <label for="message" class="font-medium">What would you like to discuss?</label>
+    <textarea
+      id="message"
+      name="message"
+      rows="6"
+      required
+      maxlength="5000"
+      data-error="Tell us briefly what you would like to discuss."
+      aria-describedby="message-error"
+      class="control resize-y"></textarea>
+    <p id="message-error" class="error" hidden></p>
+  </div>
+
+  {/* Honeypot for spam bots: hidden from people, so anything entered here is discarded. */}
+  <div class="hidden" aria-hidden="true">
+    <label for="company-website">Leave this field empty</label>
+    <input id="company-website" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+  </div>
+
+  {turnstileKey && <div class="cf-turnstile min-h-[65px] sm:col-span-2" data-sitekey={turnstileKey} data-theme="light"></div>}
+  {turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+  <div class="sm:col-span-2">
+    <button type="submit" class="btn btn-dark">
+      Request an initial conversation
+      <Arrow />
+    </button>
+    <p class="mt-5 max-w-[56ch] text-sm text-iron">
+      We use these details only to respond to your enquiry. See our <a href="/privacy/" class="underline underline-offset-2">privacy notice</a>.
+    </p>
+    <div id="form-status" role="status" class="mt-6 border-l-2 border-carbon pl-4 empty:hidden"></div>
+  </div>
+</form>
+
+<template id="status-draft">
+  <p class="font-medium">This draft is not connected to an inbox yet, so your message has not been sent.</p>
+  <p class="mt-1 text-iron">Please email <a href={`mailto:${site.email.enquiries}`} class="underline underline-offset-2">{site.email.enquiries}</a> instead.</p>
+</template>
+<template id="status-check">
+  <p class="font-medium">The security check has not finished yet.</p>
+  <p class="mt-1 text-iron">Please wait a moment and send again, or email <a href={`mailto:${site.email.enquiries}`} class="underline underline-offset-2">{site.email.enquiries}</a>.</p>
+</template>
+<template id="status-sent">
+  <p class="font-medium">Thank you. Your enquiry has been sent.</p>
+  <p class="mt-1 text-iron">We will be in touch to arrange a conversation.</p>
+</template>
+<template id="status-failed">
+  <p class="font-medium">Sorry, your message could not be sent.</p>
+  <p class="mt-1 text-iron">Please try again, or email <a href={`mailto:${site.email.enquiries}`} class="underline underline-offset-2">{site.email.enquiries}</a>.</p>
+</template>
+
+<style>
+  .field {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+  }
+
+  .control {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--color-iron);
+    border-radius: 0;
+    background: var(--color-white);
+    color: var(--color-carbon);
+    line-height: 1.5;
+    transition: border-color 0.2s ease;
+  }
+
+  .control:hover {
+    border-color: var(--color-carbon);
+  }
+
+  /* A new message eases into view. */
+  :global(html.motion) #form-status > :global(*) {
+    animation: status-in 0.7s var(--ease) both;
+  }
+
+  @keyframes status-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+  }
+
+  .control:focus-visible {
+    outline: 2px solid var(--color-carbon);
+    outline-offset: -2px;
+    border-color: var(--color-carbon);
+  }
+
+  /* No colour in the palette signals an error, so weight carries it instead. */
+  .control[aria-invalid='true'] {
+    border: 2px solid var(--color-carbon);
+  }
+
+  .error {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('enquiry') as HTMLFormElement | null;
+  const status = document.getElementById('form-status');
+
+  const showStatus = (template: string) => {
+    if (!status) return;
+    const content = document.getElementById(template) as HTMLTemplateElement;
+    status.replaceChildren(content.content.cloneNode(true));
+  };
+
+  const validate = (control: HTMLInputElement | HTMLTextAreaElement) => {
+    const error = control.required ? document.getElementById(`${control.id}-error`) : null;
+    if (!error) return true;
+    const valid = control.checkValidity() && control.value.trim() !== '';
+    error.hidden = valid;
+    error.textContent = valid ? '' : (control.dataset.error ?? '');
+    if (valid) control.removeAttribute('aria-invalid');
+    else control.setAttribute('aria-invalid', 'true');
+    return valid;
+  };
+
+  if (form && status) {
+    // The browser's own validation remains the fallback when this script does not run.
+    form.noValidate = true;
+    const controls = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('.control')];
+
+    // Errors clear while typing, not on blur: clearing on blur shifts the layout mid-click and loses the submit.
+    controls.forEach((control) => {
+      control.addEventListener('input', () => {
+        if (control.hasAttribute('aria-invalid')) validate(control);
+      });
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.replaceChildren();
+
+      const invalid = controls.filter((control) => !validate(control));
+      if (invalid.length) {
+        invalid[0].focus();
+        return;
+      }
+
+      const data = new FormData(form);
+      if (data.get('_gotcha')) return;
+
+      const endpoint = form.dataset.endpoint;
+      if (!endpoint) {
+        showStatus('status-draft');
+        return;
+      }
+
+      const turnstile = (window as unknown as { turnstile?: { reset: () => void } }).turnstile;
+      if (form.querySelector('.cf-turnstile') && !data.get('cf-turnstile-response')) {
+        showStatus('status-check');
+        return;
+      }
+
+      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (submit) submit.disabled = true;
+      try {
+        // The provider's reply is only ever checked for success. None of it reaches the page.
+        const response = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        if (!response.ok) throw new Error(String(response.status));
+        form.reset();
+        showStatus('status-sent');
+      } catch {
+        showStatus('status-failed');
+      } finally {
+        if (submit) submit.disabled = false;
+        // Each security check token works once.
+        turnstile?.reset();
+      }
+    });
+  }
+</script>

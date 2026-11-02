@@ -1,0 +1,311 @@
+---
+import GalleryScene from './GalleryScene.astro';
+import { highlights } from '../data/content';
+---
+
+<section id="highlights" class="section-y overflow-hidden bg-carbon text-white" aria-labelledby="highlights-title">
+  <div class="wrap">
+    <h2 id="highlights-title" class="max-w-[18ch] text-title" data-reveal>Where time, money and capacity get lost.</h2>
+    <p class="mt-5 max-w-[44ch] text-lead text-pale i-1" data-reveal>
+      Some of what we look for when we map how work really moves.
+    </p>
+  </div>
+
+  <div class="gallery" data-gallery>
+    <ul class="track" tabindex="0" aria-label="Examples of what we look for. Scroll sideways to see more.">
+      {
+        highlights.map((item) => (
+          <li class="tile">
+            <h3 class="text-heading">{item.name}</h3>
+            <p class="mt-3 text-pale">{item.text}</p>
+            <div class="mx-auto mt-6 max-w-[40rem] lg:mt-8">
+              <GalleryScene name={item.scene} label={item.alt} />
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="wrap controls">
+      <div class="dots">
+        {
+          highlights.map((item, i) => (
+            <button type="button" class="dot" aria-label={`Show highlight ${i + 1}: ${item.name}`}>
+              <span class="bar"><span class="fill" /></span>
+            </button>
+          ))
+        }
+      </div>
+      <button type="button" class="control play" aria-label="Pause the highlights">
+        <svg class="icon-pause" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path d="M4 2h3v12H4zM9 2h3v12H9z" />
+        </svg>
+        <svg class="icon-play" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path d="M4 2l10 6-10 6z" />
+        </svg>
+      </button>
+      <div class="paddles">
+        <button type="button" class="control prev" aria-label="Previous highlight">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M15 8H2M7 3L2 8l5 5" />
+          </svg>
+        </button>
+        <button type="button" class="control next" aria-label="Next highlight">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M1 8h13M9 3l5 5-5 5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gallery {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    --inset: max(var(--gutter), calc((100vw - 86rem) / 2 + var(--gutter)));
+  }
+
+  .track {
+    display: flex;
+    gap: 0.875rem;
+    padding-inline: var(--inset);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--inset);
+    scrollbar-width: none;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .track:focus-visible {
+    outline-offset: -4px;
+  }
+
+  .tile {
+    --cut: 1.75rem;
+    flex: none;
+    width: min(88vw, 58rem);
+    padding: clamp(1.5rem, 3.5vw, 3rem);
+    background: var(--color-gunmetal);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    scroll-snap-align: start;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .dots {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    margin-right: auto;
+  }
+
+  .dot {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    min-width: 1.5rem;
+    height: 2.75rem;
+    padding-inline: 0.25rem;
+    cursor: pointer;
+  }
+
+  .bar {
+    display: block;
+    width: 0.625rem;
+    height: 0.375rem;
+    overflow: hidden;
+    background: var(--color-iron);
+    transition: width 0.6s var(--ease), background-color 0.25s ease;
+  }
+
+  .dot:hover .bar {
+    background: var(--color-slate);
+  }
+
+  .dot[aria-current] .bar {
+    width: 3rem;
+    background: var(--color-iron);
+  }
+
+  .fill {
+    display: block;
+    height: 100%;
+    background: var(--color-white);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .dot[aria-current] .fill {
+    transform: none;
+  }
+
+  .is-playing .dot[aria-current] .fill {
+    animation: fill 7s linear both;
+  }
+
+  @keyframes fill {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  .control {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: var(--color-gunmetal);
+    color: var(--color-white);
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+
+  .control:hover:not(:disabled) {
+    background: var(--color-iron);
+  }
+
+  .control:disabled {
+    color: var(--color-slate);
+    cursor: default;
+  }
+
+  .paddles {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .play .icon-play {
+    display: none;
+  }
+
+  .is-paused .play .icon-play {
+    display: block;
+  }
+
+  .is-paused .play .icon-pause {
+    display: none;
+  }
+
+  /* The controls only work with JavaScript. Without it the tiles still scroll sideways. */
+  :global(html:not(.js)) .controls {
+    display: none;
+  }
+
+  :global(html:not(.motion)) .play {
+    display: none;
+  }
+</style>
+
+<script>
+  import { motionOk } from '../scripts/motion';
+
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+    const track = gallery.querySelector<HTMLElement>('.track');
+    const tiles = [...gallery.querySelectorAll<HTMLElement>('.tile')];
+    const dots = [...gallery.querySelectorAll<HTMLElement>('.dot')];
+    const play = gallery.querySelector<HTMLButtonElement>('.play');
+    const prev = gallery.querySelector<HTMLButtonElement>('.prev');
+    const next = gallery.querySelector<HTMLButtonElement>('.next');
+    if (!track || !play || !prev || !next) return;
+
+    let index = 0;
+    let playing = motionOk;
+    let onScreen = false;
+    let timer = 0;
+
+    const go = (target: number) => {
+      track.scrollTo({
+        left: tiles[target].offsetLeft - tiles[0].offsetLeft,
+        behavior: motionOk ? 'smooth' : 'auto',
+      });
+    };
+
+    const schedule = () => {
+      window.clearTimeout(timer);
+      const running = playing && onScreen;
+      gallery.classList.toggle('is-playing', running);
+      gallery.classList.toggle('is-paused', !playing);
+      play.setAttribute('aria-label', playing ? 'Pause the highlights' : 'Play the highlights');
+      if (running) timer = window.setTimeout(() => go((index + 1) % tiles.length), 7000);
+    };
+
+    const setCurrent = (target: number) => {
+      index = target;
+      tiles.forEach((tile, i) => tile.classList.toggle('is-active', i === target && onScreen));
+      dots.forEach((dot, i) => {
+        if (i === target) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+      prev.disabled = target === 0;
+      next.disabled = target === tiles.length - 1;
+      schedule();
+    };
+
+    const stop = () => {
+      if (!playing) return;
+      playing = false;
+      schedule();
+    };
+
+    const currentTile = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setCurrent(tiles.indexOf(entry.target as HTMLElement));
+        }
+      },
+      { root: track, threshold: 0.6 },
+    );
+    tiles.forEach((tile) => currentTile.observe(tile));
+
+    new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        setCurrent(index);
+      },
+      { threshold: 0.3 },
+    ).observe(gallery);
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        stop();
+        go(i);
+      });
+    });
+    prev.addEventListener('click', () => {
+      stop();
+      go(Math.max(0, index - 1));
+    });
+    next.addEventListener('click', () => {
+      stop();
+      go(Math.min(tiles.length - 1, index + 1));
+    });
+    play.addEventListener('click', () => {
+      playing = !playing;
+      schedule();
+    });
+
+    // Reaching for the gallery yourself hands over control until you press play again.
+    track.addEventListener('pointerdown', stop, { passive: true });
+    track.addEventListener('keydown', stop, { passive: true });
+    track.addEventListener(
+      'wheel',
+      (event) => {
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) stop();
+      },
+      { passive: true },
+    );
+  });
+</script>

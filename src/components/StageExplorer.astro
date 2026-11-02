@@ -1,0 +1,598 @@
+---
+import Modal from './Modal.astro';
+import Arrow from './Arrow.astro';
+import { engagementSteps, stages } from '../data/content';
+
+// One illustrative workflow, shown three ways. Each node's two positions are in the styles below.
+const nodes = [
+  { label: 'Order' },
+  { label: 'Plan' },
+  { label: 'Dispatch' },
+  { label: 'Deliver' },
+  { label: 'Proof of delivery' },
+  { label: 'Invoice' },
+];
+const tangle = [
+  { d: 'M90 78C90 120 130 140 150 166' },
+  { d: 'M214 166C232 150 258 140 272 118' },
+  { d: 'M362 84C380 78 388 70 392 60' },
+  { d: 'M316 118C330 128 345 135 356 148', dashed: true },
+  { d: 'M400 148C425 120 450 100 462 72', dashed: true },
+  { d: 'M500 72C545 120 540 210 500 246' },
+  { d: 'M438 246C425 230 410 215 395 196', dashed: true },
+  { d: 'M384 296C370 320 365 335 352 340' },
+  { d: 'M246 322C225 290 205 260 190 214', dashed: true },
+  { d: 'M196 352C155 365 110 350 96 318' },
+  { d: 'M100 262C112 240 130 225 150 214', dashed: true },
+];
+const extras = [
+  { label: 'Spreadsheet', x: 112, y: 166, width: 136 },
+  { label: 'Email', x: 322, y: 148, width: 100 },
+];
+const flags = [
+  { x: 112, y: 148, label: 'Keyed twice', lx: 100, ly: 153, anchor: 'end' },
+  { x: 150, y: 358, label: 'Waiting on paperwork', lx: 188, ly: 392, anchor: 'end' },
+  { x: 26, y: 244, label: 'Disputed', lx: 42, ly: 249, anchor: 'start' },
+];
+const measures = [
+  { x: 306, height: 34 },
+  { x: 336, height: 52 },
+  { x: 366, height: 44 },
+  { x: 396, height: 58 },
+];
+const mark = 'M-1 -7H7.5V.6L.8 7H-7.5V-.8Z';
+---
+
+<section id="stages" class="explorer bg-gunmetal text-white" data-explorer data-stage="understand" aria-labelledby="stages-title">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="stages-title" class="text-title" data-reveal>Three connected stages.</h2>
+      <p class="mx-auto mt-5 max-w-[46ch] text-lead text-pale i-1" data-reveal>
+        We do more than identify problems. We work towards solving them. Scroll to follow one workflow through all three
+        stages.
+      </p>
+    </div>
+
+    <div class="layout">
+      <div class="visual">
+        <div class="tabs" role="group" aria-label="Choose a stage">
+          {
+            stages.map((stage, i) => (
+              <button type="button" class="tab" data-target={stage.name.toLowerCase()} aria-pressed={i === 0 ? 'true' : 'false'}>
+                {stage.name}
+              </button>
+            ))
+          }
+        </div>
+
+        <svg class="map" viewBox="0 0 560 400" role="img" aria-label="Illustrative job-to-invoice workflow. As it really runs, it passes through spreadsheets and email and picks up delays. Redesigned, it becomes one simple route from order to invoice. In place, it runs with agreed measures and regular review.">
+          <g class="tangle">
+            {tangle.map((line) => <path class:list={['tangle-line', { 'is-dashed': line.dashed }]} d={line.d} />)}
+          </g>
+
+          <path class="flow" pathLength="1" d="M90 78H470V298H90" />
+          <path class="chevrons" d="M180 72l6 6-6 6M370 72l6 6-6 6M464 182l6 6 6-6M376 292l-6 6 6 6M186 292l-6 6 6 6" />
+
+          <g class="tokens">
+            {[0, 1, 2].map((n) => <path class={`token n-${n}`} d={mark} />)}
+          </g>
+
+          {
+            extras.map((extra) => (
+              <g class="extra" transform={`translate(${extra.x} ${extra.y})`}>
+                <path d={`M10 0H${extra.width}V38L${extra.width - 10} 48H0V10Z`} />
+                <text x={extra.width / 2} y="30" text-anchor="middle">{extra.label}</text>
+              </g>
+            ))
+          }
+
+          {
+            nodes.map((node, i) => (
+              <g class={`node node-${i} n-${i}`}>
+                <path d="M12 0H156V44L144 56H0V12Z" />
+                <text x="78" y="34" text-anchor="middle">{node.label}</text>
+              </g>
+            ))
+          }
+
+          <g class="flags">
+            {
+              flags.map((flag, i) => (
+                <g class={`flag n-${i}`}>
+                  <path d={mark} transform={`translate(${flag.x} ${flag.y}) scale(1.3)`} />
+                  <text x={flag.lx} y={flag.ly} text-anchor={flag.anchor}>{flag.label}</text>
+                </g>
+              ))
+            }
+          </g>
+
+          <text class="caption caption-improve" x="280" y="194" text-anchor="middle">Simplest workable flow</text>
+
+          <g class="running">
+            <path class="review" d="M90 270V112" />
+            <path class="review-head" d="M83 120l7-9 7 9" />
+            <text x="104" y="184">Review against</text>
+            <text x="104" y="204">objectives</text>
+            {
+              measures.map((bar, i) => (
+                <rect class={`measure n-${i}`} x={bar.x} y={224 - bar.height} width="20" height={bar.height} />
+              ))
+            }
+            <text x="366" y="246" text-anchor="middle">Agreed measures</text>
+          </g>
+        </svg>
+
+        <p class="mt-1 text-sm text-pale">Illustrative example: a job-to-invoice workflow.</p>
+      </div>
+
+      <div class="steps">
+        {
+          stages.map((stage) => (
+            <div class="step" data-step={stage.name.toLowerCase()}>
+              <h3 class="text-title" data-reveal>{stage.name}</h3>
+              <p class="mt-5 max-w-[34ch] text-lead i-1" data-reveal>{stage.summary}</p>
+              <p class="mt-5 max-w-[38ch] text-pale i-2" data-reveal>{stage.note}</p>
+            </div>
+          ))
+        }
+        <div class="more">
+          <a href="/approach/" class="pill" data-modal="engagement-steps" aria-haspopup="dialog">
+            How an engagement works
+            <span class="plus"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<Modal id="engagement-steps" title="How an engagement works" kicker="From first conversation to client report">
+  <ol class="sheet-list">
+    {
+      engagementSteps.map((step, i) => (
+        <li class="grid grid-cols-[2.5rem_1fr]">
+          <span class="text-white">{i + 1}</span>
+          <span>{step}</span>
+        </li>
+      ))
+    }
+  </ol>
+  <a href="/approach/" class="link mt-8">Read more about our approach <Arrow /></a>
+</Modal>
+
+<style>
+  .explorer {
+    padding-top: clamp(5rem, 3rem + 8vw, 10rem);
+  }
+
+  .head {
+    max-width: 46rem;
+    margin-inline: auto;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    text-align: center;
+  }
+
+  .layout {
+    display: grid;
+  }
+
+  .visual {
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 2;
+    padding-block: 0.75rem;
+    background: var(--color-gunmetal);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .tab {
+    --cut: 0.375rem;
+    flex: 1;
+    padding: 0.4375rem 0.5rem;
+    background: var(--color-iron);
+    color: var(--color-white);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .tab:hover {
+    background: var(--color-slate);
+    color: var(--color-carbon);
+  }
+
+  .tab[aria-pressed='true'] {
+    background: var(--color-pale);
+    color: var(--color-carbon);
+  }
+
+  .tab:focus-visible {
+    outline-offset: -4px;
+  }
+
+  :global(html:not(.js)) .tabs {
+    display: none;
+  }
+
+  .map {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 46svh;
+    overflow: visible;
+  }
+
+  .steps {
+    position: relative;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 62svh;
+    padding-block: 2.5rem;
+  }
+
+  /* Stays in reach while the workflow is on screen, and comes to rest at the end of the steps. */
+  .more {
+    position: sticky;
+    bottom: 1.25rem;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  @media (min-width: 1024px) {
+    .more {
+      justify-content: flex-start;
+    }
+
+    .layout {
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 2rem;
+    }
+
+    .visual {
+      grid-row: 1;
+      grid-column: 6 / 13;
+      align-self: start;
+      top: calc(var(--nav-h) + 2.5rem);
+      background: none;
+    }
+
+    .tabs {
+      justify-content: flex-end;
+    }
+
+    .tab {
+      flex: none;
+      min-width: 7.5rem;
+    }
+
+    .map {
+      max-height: 68svh;
+    }
+
+    .steps {
+      grid-row: 1;
+      grid-column: 1 / 6;
+    }
+
+    .step {
+      min-height: 84svh;
+    }
+  }
+
+  /* Text and strokes inside the map. */
+  .map text {
+    font-weight: 500;
+    fill: var(--color-pale);
+    font-size: 17px;
+  }
+
+  /* Where each node sits as the work really runs (x0, y0) and once redesigned (x1, y1). */
+  .node-0 {
+    --x0: 16px;
+    --y0: 22px;
+    --x1: 12px;
+    --y1: 50px;
+  }
+
+  .node-1 {
+    --x0: 206px;
+    --y0: 62px;
+    --x1: 202px;
+    --y1: 50px;
+  }
+
+  .node-2 {
+    --x0: 392px;
+    --y0: 16px;
+    --x1: 392px;
+    --y1: 50px;
+  }
+
+  .node-3 {
+    --x0: 384px;
+    --y0: 246px;
+    --x1: 392px;
+    --y1: 270px;
+  }
+
+  .node-4 {
+    --x0: 196px;
+    --y0: 322px;
+    --x1: 202px;
+    --y1: 270px;
+  }
+
+  .node-5 {
+    --x0: 8px;
+    --y0: 262px;
+    --x1: 12px;
+    --y1: 270px;
+  }
+
+  .node {
+    transform: translate(var(--x0), var(--y0));
+    transition: transform 1.1s var(--ease);
+  }
+
+  .node path {
+    fill: var(--color-gunmetal);
+    stroke: var(--color-slate);
+    stroke-width: 1.5;
+    transition: fill 0.7s ease, stroke 0.7s ease;
+  }
+
+  .node text {
+    transition: fill 0.7s ease;
+  }
+
+  [data-stage='improve'] .node,
+  [data-stage='implement'] .node {
+    transform: translate(var(--x1), var(--y1));
+  }
+
+  [data-stage='improve'] .node path {
+    fill: var(--color-iron);
+    stroke: var(--color-iron);
+  }
+
+  [data-stage='improve'] .node text {
+    fill: var(--color-white);
+  }
+
+  [data-stage='implement'] .node path {
+    fill: var(--color-pale);
+    stroke: var(--color-pale);
+  }
+
+  [data-stage='implement'] .node text {
+    fill: var(--color-carbon);
+  }
+
+  /* The workflow as it really runs. */
+  .tangle-line {
+    fill: none;
+    stroke: var(--color-slate);
+    stroke-width: 1.5;
+  }
+
+  .tangle-line.is-dashed {
+    stroke-dasharray: 4 6;
+  }
+
+  .tangle,
+  .extra,
+  .flags {
+    transition: opacity 0.45s ease;
+  }
+
+  .extra path {
+    fill: var(--color-gunmetal);
+    stroke: var(--color-slate);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 5;
+  }
+
+  .extra text {
+    font-size: 16px;
+  }
+
+  .flag path {
+    fill: var(--color-white);
+  }
+
+  .flag text {
+    fill: var(--color-white);
+    font-size: 15px;
+  }
+
+  [data-stage='improve'] .tangle,
+  [data-stage='implement'] .tangle,
+  [data-stage='improve'] .extra,
+  [data-stage='implement'] .extra,
+  [data-stage='improve'] .flags,
+  [data-stage='implement'] .flags {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* The redesigned route draws itself once the nodes have moved. */
+  .flow {
+    fill: none;
+    stroke: var(--color-pale);
+    stroke-width: 2;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.4s ease;
+  }
+
+  .chevrons {
+    fill: none;
+    stroke: var(--color-pale);
+    stroke-width: 2;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  [data-stage='improve'] .flow,
+  [data-stage='implement'] .flow {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1.3s var(--ease-io) 0.45s;
+  }
+
+  [data-stage='improve'] .chevrons,
+  [data-stage='implement'] .chevrons {
+    opacity: 1;
+    transition: opacity 0.5s ease 1.2s;
+  }
+
+  .caption-improve {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  [data-stage='improve'] .caption-improve {
+    opacity: 1;
+    transition: opacity 0.6s ease 1s;
+  }
+
+  /* In place: work moves along the route, measures are tracked and the result is reviewed. */
+  .running {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  [data-stage='implement'] .running {
+    opacity: 1;
+    transition: opacity 0.6s ease 0.5s;
+  }
+
+  .review {
+    fill: none;
+    stroke: var(--color-white);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 6;
+  }
+
+  .review-head {
+    fill: none;
+    stroke: var(--color-white);
+    stroke-width: 1.5;
+  }
+
+  .measure {
+    fill: var(--color-white);
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    transform: scaleY(0);
+    transition: transform 0.4s ease;
+  }
+
+  [data-stage='implement'] .measure {
+    transform: none;
+    transition: transform 1s var(--ease) calc(0.7s + var(--n) * 0.1s);
+  }
+
+  .token {
+    fill: var(--color-white);
+    opacity: 0;
+    offset-path: path('M90 78H470V298H90');
+    offset-rotate: 0deg;
+  }
+
+  :global(html.motion) [data-stage='implement'] .token {
+    opacity: 1;
+    animation: run 9s linear infinite;
+    animation-delay: calc(var(--n) * -3s);
+  }
+
+  @keyframes run {
+    from {
+      offset-distance: 0%;
+    }
+    to {
+      offset-distance: 100%;
+    }
+  }
+
+  /* Problems surface one at a time, as the workflow is examined. */
+  :global(html.motion) [data-stage='understand'] .flag {
+    animation: flag-in 0.8s var(--ease) both;
+    animation-delay: calc(0.3s + var(--n) * 0.45s);
+  }
+
+  @keyframes flag-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .map text {
+      font-size: 19px;
+    }
+
+    .flag text,
+    .running text:not(:last-child),
+    .caption-improve {
+      font-size: 19px;
+    }
+
+    .flag text {
+      display: none;
+    }
+  }
+
+  :global(html:not(.motion)) .explorer *,
+  :global(html:not(.motion)) .explorer {
+    transition: none !important;
+  }
+</style>
+
+<script>
+  import { motionOk } from '../scripts/motion';
+
+  const explorer = document.querySelector<HTMLElement>('[data-explorer]');
+
+  if (explorer) {
+    const steps = [...explorer.querySelectorAll<HTMLElement>('[data-step]')];
+    const tabs = [...explorer.querySelectorAll<HTMLButtonElement>('.tab')];
+
+    const setStage = (name: string) => {
+      explorer.dataset.stage = name;
+      tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(tab.dataset.target === name)));
+    };
+
+    // On a phone the map fills the top of the screen, so the reading line sits lower.
+    const isPhone = window.matchMedia('(max-width: 1023.98px)').matches;
+    const reader = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setStage((entry.target as HTMLElement).dataset.step ?? 'understand');
+        }
+      },
+      { rootMargin: isPhone ? '-68% 0px -28% 0px' : '-48% 0px -48% 0px' },
+    );
+    steps.forEach((step) => reader.observe(step));
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        setStage(tab.dataset.target ?? 'understand');
+        const step = steps.find((item) => item.dataset.step === tab.dataset.target);
+        step?.scrollIntoView({ block: isPhone ? 'end' : 'center', behavior: motionOk ? 'smooth' : 'auto' });
+      });
+    });
+  }
+</script>

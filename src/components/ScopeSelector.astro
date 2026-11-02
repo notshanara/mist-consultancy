@@ -1,0 +1,172 @@
+---
+import { processStages, scopes } from '../data/content';
+
+const steps = processStages.flatMap((group) => group.steps);
+---
+
+<section id="engage" class="section-y bg-gunmetal text-white" aria-labelledby="engage-title">
+  <div class="wrap">
+    <div class="mx-auto max-w-[46rem] text-center">
+      <h2 id="engage-title" class="text-title" data-reveal>Which engagement is right for you?</h2>
+      <p class="mt-5 text-lead text-pale i-1" data-reveal>
+        You can stop after the assessment, or carry on. Choose one to see how far it reaches.
+      </p>
+    </div>
+
+    <fieldset class="scope" data-reveal>
+      <legend class="sr-only">Choose a type of engagement</legend>
+
+      <div class="options">
+        {
+          scopes.map((scope, i) => (
+            <label class="option">
+              <input type="radio" name="scope" id={scope.id} checked={i === 0} />
+              <span>{scope.label}</span>
+            </label>
+          ))
+        }
+      </div>
+
+      <ol class="segments">
+        {
+          steps.map((step, i) => (
+            <li class={`segment i-${i}`}>
+              <span class="text-sm">{step.number}</span>
+              <span class="mt-1 block font-medium">{step.name}</span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="results">
+        {scopes.map((scope) => <p class="result text-lead" data-scope={scope.id}>{scope.text}</p>)}
+      </div>
+    </fieldset>
+  </div>
+</section>
+
+<style>
+  .scope {
+    max-width: 62rem;
+    margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+  }
+
+  .options {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .option {
+    --cut: 0.5rem;
+    position: relative;
+    display: block;
+    padding: 0.875rem 1.125rem;
+    background: var(--color-iron);
+    color: var(--color-white);
+    font-weight: 500;
+    text-align: center;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .option:hover {
+    background: var(--color-slate);
+    color: var(--color-carbon);
+  }
+
+  .option input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .option:has(input:checked) {
+    background: var(--color-pale);
+    color: var(--color-carbon);
+  }
+
+  .option:has(input:focus-visible) {
+    outline: 2px solid currentColor;
+    outline-offset: -5px;
+  }
+
+  .segments {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .segment {
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--color-iron);
+    color: var(--color-pale);
+    transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+    transition-delay: calc(var(--i) * 70ms);
+  }
+
+  /* How far each engagement reaches along the five steps, set by the chosen option alone. */
+  .scope:has(#scope-assessment:checked) .segment:nth-child(-n + 2),
+  .scope:has(#scope-design:checked) .segment:nth-child(-n + 3),
+  .scope:has(#scope-full:checked) .segment {
+    border-color: var(--color-white);
+    background: var(--color-white);
+    color: var(--color-carbon);
+  }
+
+  .results {
+    margin-top: 1.75rem;
+    text-align: center;
+  }
+
+  .result {
+    max-width: 52ch;
+    margin-inline: auto;
+  }
+
+  .result + .result {
+    margin-top: 1rem;
+  }
+
+  @supports selector(:has(*)) {
+    .result {
+      display: none;
+    }
+
+    .result + .result {
+      margin-top: 0;
+    }
+
+    .scope:has(#scope-assessment:checked) [data-scope='scope-assessment'],
+    .scope:has(#scope-design:checked) [data-scope='scope-design'],
+    .scope:has(#scope-full:checked) [data-scope='scope-full'] {
+      display: block;
+    }
+
+    :global(html.motion) .result {
+      animation: result-in 0.8s var(--ease) both;
+    }
+  }
+
+  @keyframes result-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .options {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .segments {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .results {
+      min-height: 7rem;
+    }
+  }
+</style>

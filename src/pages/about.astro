@@ -1,0 +1,160 @@
+---
+import CtaBand from '../components/CtaBand.astro';
+import PageHero from '../components/PageHero.astro';
+import RouteStops from '../components/RouteStops.astro';
+import Split from '../components/Split.astro';
+import ThreeIntoOne from '../components/ThreeIntoOne.astro';
+import { industries } from '../data/content';
+import Base from '../layouts/Base.astro';
+
+
+const problems = [
+  'Information keyed in more than once, and records that are hard to retrieve.',
+  'Delays and disputes between a completed job, its proof of delivery and the invoice.',
+  'Fleet, transport and warehouse costs that are difficult to allocate or explain.',
+  'Reports and KPIs that are inconsistently defined or hard to act on.',
+  'Systems and spreadsheets that do not connect, or that people do not fully use.',
+  'Processes that depend on one person knowing how things work.',
+];
+
+const strengths = [
+  {
+    name: 'Operational understanding',
+    text: 'A close understanding of how operations work day to day, and how work moves across teams, sites, systems, suppliers and customers.',
+  },
+  {
+    name: 'Analytical methods',
+    text: 'A structured, evidence-first way of working. We validate sources and establish baselines where the evidence allows.',
+  },
+  {
+    name: 'Appropriate technology',
+    text: 'Automation, AI and system changes are options alongside process, control and reporting changes, used where they genuinely improve results.',
+  },
+];
+
+const commitments = [
+  'We assess processes, not individual employees or isolated incidents.',
+  'We keep assessment findings separate from proposed solutions.',
+  'We don’t promise savings or outcomes we can’t support.',
+  'We bring in qualified specialists where work falls outside our competence.',
+];
+---
+
+<Base
+  title="About | MIST Consultancy"
+  description="MIST is an independent consultancy that helps businesses see their operations clearly and improve them in practical ways."
+>
+  <PageHero
+    title="About MIST Consultancy"
+    lead="An independent consultancy that helps businesses see their operations clearly and improve them in practical ways."
+  />
+
+  <section id="why-mist" class="section-y text-center" aria-labelledby="why-mist-title">
+    <div class="wrap">
+      <h2 id="why-mist-title" class="font-medium text-iron">Why MIST was established</h2>
+      <p class="mx-auto mt-5 max-w-[26ch] text-statement" data-words>
+        MIST was founded to help businesses understand how their operations really work, find where time, money or capacity is being lost, and develop practical ways to improve performance.
+      </p>
+      <p class="mx-auto mt-10 max-w-[52ch] text-lead text-iron" data-reveal>
+        Identifying a problem is only part of the job. MIST is set up to carry on from there: to develop practical solutions and help put them in place.
+      </p>
+    </div>
+  </section>
+
+  <section id="problems" class="section-y bg-carbon text-white" aria-labelledby="problems-title" data-lens>
+    <div class="wrap">
+      <h2 id="problems-title" class="mx-auto max-w-[20ch] text-center text-title" data-reveal>The problems we aim to solve.</h2>
+      <p class="mx-auto mt-5 max-w-[46ch] text-center text-lead text-pale i-1" data-reveal>
+        Operational problems rarely sit neatly in one department. They tend to appear where work passes between people, sites and systems.
+      </p>
+      <ul class="mx-auto mt-14 max-w-[62rem] lg:mt-20">
+        {problems.map((problem) => <li class="problem text-heading">{problem}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-y bg-pale" aria-labelledby="strengths-title">
+    <div class="wrap">
+      <h2 id="strengths-title" class="mb-12 text-center text-title lg:mb-16" data-reveal>Three things working together.</h2>
+      <ThreeIntoOne items={strengths} />
+    </div>
+  </section>
+
+  <Split id="how-we-think" title="Practical outcomes over unnecessary complexity">
+    <p class="max-w-[52ch] text-lead" data-reveal>
+      We start with the business model, objectives and operating context, then recommend the simplest workable solution for the problem.
+    </p>
+    <ul class="mt-10 border-t border-pale" data-reveal-group>
+      {commitments.map((commitment) => <li class="border-b border-pale py-3.5 text-iron" data-reveal>{commitment}</li>)}
+    </ul>
+  </Split>
+
+  <section id="direction" class="section-y pt-0! text-center" aria-labelledby="direction-title">
+    <div class="wrap">
+      <h2 id="direction-title" class="text-title" data-reveal>Where we are heading.</h2>
+      <p class="mx-auto mt-5 max-w-[52ch] text-lead text-iron i-1" data-reveal>
+        Transport and logistics are our initial focus. Our method is built to serve operations-led businesses in other industries too, and our ambition is to grow into broader business auditing and operational improvement.
+      </p>
+      <div class="mt-12 lg:mt-16">
+        <RouteStops stops={industries} beyond="Any operations-led business" />
+      </div>
+    </div>
+  </section>
+
+  <section id="founder" class="section-y bg-gunmetal text-white" aria-labelledby="founder-heading">
+    <div class="wrap grid gap-y-8 lg:grid-cols-12 lg:gap-x-8">
+      <div class="lg:col-span-4">
+        <h2 id="founder-heading" class="text-heading" data-reveal>Shanan Mimana</h2>
+        <p class="mt-2 text-pale i-1" data-reveal>Founder</p>
+      </div>
+      <div class="max-w-[62ch] space-y-5 text-pale lg:col-span-7 lg:col-start-6" data-reveal-group>
+        <p data-reveal>
+          Shanan Mimana founded MIST to help transport, fleet, logistics and distribution businesses see their operations clearly and improve them in practical ways.
+        </p>
+        <p data-reveal>
+          With a background in Materials Science and Engineering from the University of Manchester and hands-on experience supporting fleet and transport operations, Shanan combines an analytical, evidence-first approach with a close understanding of how operations work day to day.
+        </p>
+        <p data-reveal>
+          Shanan developed MOAT to bring structure and rigour to operational assessments, and is interested in how modern tools, including AI and automation, can be built into existing operational systems where they genuinely improve results.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .problem {
+    padding-block: clamp(1.25rem, 3vw, 2.25rem);
+    border-top: 1px solid var(--color-gunmetal);
+  }
+
+  .problem:last-child {
+    border-bottom: 1px solid var(--color-gunmetal);
+  }
+
+  /* Each line comes into focus as it crosses the middle of the screen. */
+  :global(html.motion) .problem {
+    color: var(--color-slate);
+    transition: color 0.5s ease;
+  }
+
+  :global(html.motion) .problem:global(.is-focus) {
+    color: var(--color-white);
+  }
+</style>
+
+<script>
+  import { motionOk } from '../scripts/motion';
+
+  if (motionOk) {
+    const lens = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) entry.target.classList.toggle('is-focus', entry.isIntersecting);
+      },
+      { rootMargin: '-34% 0px -34% 0px' },
+    );
+    document.querySelectorAll('.problem').forEach((problem) => lens.observe(problem));
+  }
+</script>

@@ -1,0 +1,60 @@
+---
+// Shows which of the three stages a service belongs to.
+interface Props {
+  stage: string;
+}
+const { stage } = Astro.props;
+const names = ['Understand', 'Improve', 'Implement'];
+---
+
+<ul class="meter" aria-label={`Stage: ${stage}`} data-reveal>
+  {names.map((name, i) => <li class:list={['segment', `n-${i}`, { on: stage.includes(name) }]}>{name}</li>)}
+</ul>
+
+<style>
+  .meter {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    max-width: 24rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-iron);
+  }
+
+  .segment {
+    position: relative;
+    padding-top: 0.625rem;
+  }
+
+  .segment::before,
+  .segment::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--color-pale);
+  }
+
+  .segment::after {
+    background: var(--color-carbon);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .on {
+    color: var(--color-carbon);
+  }
+
+  .on::after {
+    transform: none;
+  }
+
+  :global(html.motion) .meter:not(:global(.is-in)) .on::after {
+    transform: scaleX(0);
+  }
+
+  :global(html.motion) .on::after {
+    transition: transform 0.9s var(--ease) calc(0.25s + var(--n) * 0.15s);
+  }
+</style>

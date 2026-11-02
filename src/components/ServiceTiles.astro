@@ -1,0 +1,92 @@
+---
+import Arrow from './Arrow.astro';
+import Modal from './Modal.astro';
+import { services } from '../data/content';
+
+const tones = ['bg-carbon text-white', 'bg-gunmetal text-white', 'bg-iron text-white', 'bg-slate text-carbon'];
+---
+
+<section id="services" class="section-y" aria-labelledby="services-title">
+  <div class="wrap">
+    <div class="mx-auto max-w-[46rem] text-center">
+      <h2 id="services-title" class="text-title" data-reveal>Our services.</h2>
+      <p class="mt-5 text-lead text-iron i-1" data-reveal>
+        Engage us for an assessment alone, or for a wider engagement covering solution design and implementation.
+      </p>
+    </div>
+
+    <ul class="mt-12 grid gap-3 md:grid-cols-2 lg:mt-16" data-reveal-group>
+      {
+        services.map((service, i) => (
+          <li data-reveal>
+            <a
+              href={`/services/#${service.id}`}
+              class:list={['tile', tones[i]]}
+              data-modal={`service-${service.id}`}
+              aria-haspopup="dialog"
+            >
+              <span class="letter text-title" aria-hidden="true">{service.letter}</span>
+              <span class="mt-auto block">
+                <span class="block text-heading">{service.name}</span>
+                <span class="mt-3 block max-w-[38ch]">{service.summary}</span>
+              </span>
+              <span class="plus" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+{
+  services.map((service) => (
+    <Modal id={`service-${service.id}`} title={service.name} kicker={`Stage: ${service.stage}`}>
+      <p class="max-w-[46ch] text-lead">{service.summary}</p>
+      <ul class="sheet-list mt-8">
+        {service.items.map((item) => <li>{item}</li>)}
+      </ul>
+      <a href={`/services/#${service.id}`} class="link mt-8">
+        More on our services page <Arrow />
+      </a>
+    </Modal>
+  ))
+}
+
+<style>
+  .tile {
+    --cut: 1.75rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    height: 100%;
+    min-height: clamp(19rem, 30vw, 26rem);
+    padding: clamp(1.5rem, 3vw, 2.75rem);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: transform 0.7s var(--ease);
+  }
+
+  .tile:hover {
+    transform: translateY(-0.375rem);
+  }
+
+  .tile:focus-visible {
+    outline-offset: -8px;
+  }
+
+  .letter {
+    transition: transform 0.7s var(--ease);
+    transform-origin: left top;
+  }
+
+  .tile:hover .letter {
+    transform: scale(1.12);
+  }
+
+  .plus {
+    position: absolute;
+    top: clamp(1.25rem, 2.5vw, 2.25rem);
+    right: clamp(1.25rem, 2.5vw, 2.25rem);
+  }
+</style>

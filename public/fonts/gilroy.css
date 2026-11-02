@@ -1,0 +1,8 @@
+/* Gilroy SemiBold for headings, from Mist's own licence. Base.astro links this only when the font file is here. */
+@font-face {
+  font-family: "Mist Gilroy";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/gilroy-semibold.woff2") format("woff2");
+}

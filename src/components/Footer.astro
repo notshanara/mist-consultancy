@@ -1,0 +1,64 @@
+---
+import Logo from './Logo.astro';
+import { contactLink, nav, site } from '../data/site';
+
+interface Props {
+  note?: string;
+}
+const { note } = Astro.props;
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-carbon text-pale">
+  {
+    note && (
+      <div class="wrap">
+        <p class="max-w-[72ch] border-b border-gunmetal pt-10 pb-6 text-sm">{note}</p>
+      </div>
+    )
+  }
+  <div class="wrap grid gap-12 py-16 md:grid-cols-12 md:gap-x-8 md:py-20">
+    <div class="md:col-span-5">
+      <Logo class="h-7 w-auto text-white" />
+      <p class="mt-6 max-w-[36ch]">{site.description}</p>
+    </div>
+
+    <nav aria-label="Footer" class="md:col-span-3 lg:col-start-7">
+      <ul class="space-y-2">
+        {
+          [...nav, contactLink].map((item) => (
+            <li>
+              <a href={item.href} class="transition-colors hover:text-white">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="md:col-span-4 lg:col-span-3 lg:col-start-10">
+      <ul class="space-y-2">
+        <li>
+          <a href={`mailto:${site.email.general}`} class="break-words transition-colors hover:text-white">
+            {site.email.general}
+          </a>
+        </li>
+        <li>
+          <a href={site.phone.href} class="transition-colors hover:text-white">{site.phone.display}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="flex flex-wrap justify-between gap-x-8 gap-y-2 border-t border-gunmetal py-6 text-sm">
+      <div>
+        <p>&copy; {year} {site.name}</p>
+        <p class="mt-1 text-xs text-slate">Designed by andr01x</p>
+      </div>
+      <a href="/privacy/" class="transition-colors hover:text-white">Privacy and cookies</a>
+    </div>
+  </div>
+</footer>

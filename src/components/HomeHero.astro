@@ -1,0 +1,302 @@
+---
+import Arrow from './Arrow.astro';
+import TonalEdge from './TonalEdge.astro';
+
+// The mark drawn as five outlines, one for each layer, with a few blue dots along its edge.
+// Scrolling fills the outlines into solid layers and flies through them to white.
+const ratio = 0.66;
+const mark = 'M-13.9-106.4H113.7V9.7L12.3 106.4H-113.7V-12Z';
+const tones = ['text-gunmetal', 'text-iron', 'text-slate', 'text-pale', 'text-white'];
+
+// The outlines brighten inwards, like the solid layers they turn into.
+const outlines = ['text-slate', 'text-slate', 'text-pale', 'text-pale', 'text-white'];
+
+// Around the top and right edges, in the mark's own units. [x, y, radius]
+const sparks = [
+  [-4, -138, 2.4], [48, -149, 3.6], [100, -143, 2.6], [146, -120, 4.4], [158, -66, 3], [151, -14, 4.6], [133, 38, 2.4],
+];
+---
+
+<section class="hero bg-carbon text-white" data-hero aria-labelledby="hero-title">
+  <div class="stage">
+    <svg class="field" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+      <g class="zoom" transform="translate(500 800) scale(2.1)">
+        <g class="solid">
+          {tones.map((tone, i) => <path class={tone} fill="currentColor" transform={`scale(${ratio ** i})`} d={mark} />)}
+        </g>
+        <g class="lines" fill="none" stroke="currentColor">
+          {
+            outlines.map((tone, i) => (
+              <g class={`layer i-${i}`}>
+                <path class={`contour ${tone}`} vector-effect="non-scaling-stroke" transform={`scale(${ratio ** i})`} d={mark} />
+              </g>
+            ))
+          }
+        </g>
+        <g class="sparks text-blue" fill="currentColor">
+          {sparks.map(([x, y, r], i) => <circle class={`spark n-${i}`} cx={x} cy={y} r={r} />)}
+        </g>
+      </g>
+    </svg>
+
+    <div class="copy wrap" data-copy>
+      <div class="block">
+        <p class="eyebrow intro text-pale"><span class="rule" aria-hidden="true"></span>Operational assessment and improvement</p>
+        <h1 id="hero-title" class="title intro font-display i-1">
+          <span class="block text-pale">We understand the operations.</span>
+          <span class="block">Let MIST improve your Business.</span>
+        </h1>
+        <p class="lead intro text-pale i-2">
+          We examine how your business operates and identify operational inefficiencies, develop practical solutions and implement improvements that make a measurable difference.
+        </p>
+        <div class="actions intro i-3">
+          <a href="/contact/" class="btn btn-outline cta">Contact MIST <Arrow /></a>
+          <a href="#stages" class="link">See how we can help you <Arrow /></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="fallback-edge"><TonalEdge /></div>
+
+<style>
+  .hero {
+    position: relative;
+  }
+
+  .stage {
+    position: relative;
+    min-height: calc(100svh - var(--nav-h));
+    overflow: hidden;
+  }
+
+  .field {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .copy {
+    position: relative;
+    padding-top: clamp(2.5rem, 7svh, 5rem);
+    padding-bottom: clamp(17rem, 44svh, 24rem);
+  }
+
+  /* Heading and subhead read as one block: tracked capitals, then the line that explains them. */
+  .block {
+    max-width: 40rem;
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .rule {
+    flex: none;
+    width: 2.25rem;
+    height: 2px;
+    background: var(--color-blue);
+  }
+
+  .title {
+    margin-top: 1.5rem;
+    font-size: clamp(1.875rem, 1rem + 2.5vw, 3.125rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .lead {
+    max-width: 44ch;
+    margin-top: 1.5rem;
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.7;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    margin-top: 2.25rem;
+  }
+
+  .cta {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .contour {
+    stroke-width: 1.5;
+  }
+
+  /* The solid layers stay hidden until scrolling starts to fill them in. */
+  .solid {
+    opacity: clamp(0, calc((var(--p, 0) - 0.01) * 14), 1);
+  }
+
+  .lines,
+  .sparks {
+    opacity: clamp(0, calc(1 - var(--p, 0) * 12), 1);
+  }
+
+  /* Wide screens put the copy on the left and the mark beside it. */
+  @media (min-width: 1024px) {
+    .stage {
+      display: flex;
+      align-items: center;
+    }
+
+    .copy {
+      width: 100%;
+      padding-bottom: clamp(2.5rem, 7svh, 5rem);
+    }
+
+    :global(html:not(.motion)) .field {
+      left: 46%;
+      width: 54%;
+    }
+
+    :global(html:not(.motion)) .zoom {
+      transform: translate(500px, 560px) scale(2.5);
+    }
+  }
+
+  /* With motion on, the stage pins and the track gives it room to scrub. */
+  :global(html.motion) .hero {
+    height: 360svh;
+  }
+
+  :global(html.motion) .stage {
+    position: sticky;
+    top: var(--nav-h);
+    height: calc(100svh - var(--nav-h));
+    min-height: 0;
+  }
+
+  :global(html.motion) .copy {
+    padding-bottom: 0;
+    opacity: calc(1 - var(--p, 0) * 7);
+    transform: translateY(calc(var(--p, 0) * -22svh));
+    will-change: opacity, transform;
+  }
+
+  @media (min-width: 1024px) {
+    :global(html.motion) .copy {
+      padding-bottom: clamp(2.5rem, 7svh, 5rem);
+    }
+  }
+
+  :global(html.motion) .fallback-edge {
+    display: none;
+  }
+
+  :global(html.motion) .layer {
+    animation: outline-in 1.5s var(--ease) both;
+    animation-delay: calc(0.2s + var(--i) * 0.11s);
+  }
+
+  @keyframes outline-in {
+    from {
+      opacity: 0;
+      transform: translateY(70px) scale(0.82);
+    }
+  }
+
+  /* The blue dots settle in once the outlines have drawn. */
+  :global(html.motion) .spark {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: spark-in 0.9s var(--ease) both;
+    animation-delay: calc(0.9s + var(--n) * 0.08s);
+  }
+
+  @keyframes spark-in {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+</style>
+
+<script>
+  import { clamp, motionOk, scrub } from '../scripts/motion';
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const stage = hero?.querySelector<HTMLElement>('.stage');
+  const svg = hero?.querySelector<SVGSVGElement>('.field');
+  const zoom = hero?.querySelector<SVGGElement>('.zoom');
+  const copy = hero?.querySelector<HTMLElement>('[data-copy]');
+
+  if (motionOk && hero && stage && svg && zoom && copy) {
+    const coreRatio = 0.66 ** 4;
+    const markWidth = 227.4;
+    const markHeight = 212.8;
+    let width = 0;
+    let height = 0;
+    let restScale = 1;
+    let endScale = 1;
+    let restX = 0;
+    let restY = 0;
+    let progress = 0;
+
+    const draw = () => {
+      // A steady exponential zoom reads as flying forward, rather than speeding up.
+      const t = clamp((progress - 0.02) / 0.98);
+      const scale = restScale * (endScale / restScale) ** t;
+      const toCentre = clamp(t * 2.4);
+      const eased = toCentre * toCentre * (3 - 2 * toCentre);
+      const x = restX + (width / 2 - restX) * eased;
+      const y = restY + (height / 2 - restY) * eased;
+      zoom.setAttribute('transform', `translate(${x} ${y}) scale(${scale})`);
+      copy.style.visibility = progress > 0.16 ? 'hidden' : '';
+    };
+
+    const size = () => {
+      const rect = stage.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      svg.setAttribute('preserveAspectRatio', 'none');
+
+      if (width >= 1024) {
+        // Beside the copy, with room for the blue scatter on its right.
+        restScale = Math.min(width * 0.36, height * 0.68) / markWidth;
+        restX = width * 0.69;
+        restY = height * 0.53;
+      } else {
+        // Below the copy, running off the bottom edge of a shorter screen.
+        restScale = Math.min(width * 0.62, Math.max(height * 0.5, 260)) / markWidth;
+        // Left of centre, so the blue scatter on its right stays on screen.
+        restX = width * 0.44;
+        const copyBottom = copy.offsetTop + copy.offsetHeight;
+        // The blue scatter rises about 48 units above the mark, and needs clearing too.
+        restY = Math.max(copyBottom + (markHeight / 2 + 48) * restScale + 28, height * 0.62);
+      }
+
+      // The scale at which the white core covers the whole stage, chamfered corners included.
+      const cover = Math.max((width / 199.6 + height / 188.8) / 1.266, width / markWidth, height / markHeight);
+      endScale = (cover * 1.04) / coreRatio;
+      draw();
+    };
+
+    scrub(hero, {
+      mode: 'pin',
+      onUpdate: (value) => {
+        progress = value;
+        draw();
+      },
+    });
+
+    size();
+    window.addEventListener('resize', size);
+    document.fonts?.ready.then(size);
+  }
+</script>
