@@ -105,5 +105,6 @@ Markup hooks handled by `motion.ts`:
 - **Domain:** `site` in `astro.config.mjs` is a placeholder until the domain is confirmed.
 - **Logo:** `src/components/Logo.astro` holds a vector traced from the supplied JPEG. Replace it with the original artwork.
 - **Privacy notice:** `src/pages/privacy.astro` has bracketed items to complete and needs legal review. Remove its draft note afterwards.
-- **Founder bio:** the text on `src/pages/about.astro` is the suggested draft, still to be reviewed by Shanan.
+- **Founder bio:** the text on `src/pages/about.astro` follows the founder section of the Company Overview v2.1. Check it with Shanan before launch.
+- **MOAT:** the Company Overview v2.1 keeps its internal workings confidential. Describe only its broad purpose and capabilities, never its scoring, procedures, calculations or full methodology.
 - **Not yet added:** a CMS, analytics (with consent) and photography.

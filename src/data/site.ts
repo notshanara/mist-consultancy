@@ -4,7 +4,6 @@ export const site = {
     'Operational assessment and improvement for transport, fleet, logistics, warehousing and distribution businesses.',
   email: {
     enquiries: 'enquiries@mistconsultancy.co.uk',
-    general: 'info@mistconsultancy.co.uk',
   },
   phone: {
     display: '+44 7869 654471',

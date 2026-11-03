@@ -17,7 +17,7 @@ export const stages = [
     name: 'Implement',
     summary:
       'We work directly with you to help implement agreed upon changes. Our assistance in implementation is tailored to your business.',
-    note: 'Solution design and implementation are agreed as separately scoped work.',
+    note: 'Implementation support is included where it is agreed before work begins.',
   },
 ];
 
@@ -58,12 +58,12 @@ export const scopes = [
   {
     id: 'scope-assessment',
     label: 'An assessment on its own',
-    text: 'A clear picture of how your operation really performs and where to focus first, delivered as a client report with evidence-based findings and prioritised recommendations.',
+    text: 'A clear picture of how your operation really performs and where to focus first, with an explanation of the findings, their potential implications and the practical options available.',
   },
   {
     id: 'scope-design',
     label: 'Assessment and solution design',
-    text: 'The assessment, followed by practical recommendations on the most suitable ways to address the problems it identifies. Solution design is agreed as a separate scope.',
+    text: 'The assessment, followed by practical recommendations on the most suitable ways to address the problems it identifies.',
   },
   {
     id: 'scope-full',
@@ -73,13 +73,12 @@ export const scopes = [
 ];
 
 export const engagementSteps = [
-  'Understand the business: agree objectives, sites, time period, workflows and exclusions.',
-  'Select the areas to assess that are relevant to your operation.',
-  'Run discovery sessions, map how work actually moves, and collect evidence.',
-  'Validate sources and establish baselines.',
-  'Record findings with clear evidence references, and score the areas that were assessed.',
-  'Deliver a client report.',
-  'Optional: if you want help fixing the issues, agree a separate scope for solution design or implementation, with objectives, responsibilities, deliverables, fees and acceptance criteria.',
+  'Initial conversation: we discuss your business, its operations and the issues you want to address.',
+  'Define the scope: we agree the areas to be examined, the information required, responsibilities, timescales and expected deliverables.',
+  'Gather information: we review relevant records, processes, operational information and other evidence. Where appropriate, this may include discussions with employees and observation of operational activities.',
+  'Analyse the operation: we examine the information, identify potential inefficiencies and investigate their underlying causes.',
+  'Present findings and recommendations: you receive a clear explanation of the findings, their potential implications and the practical options available.',
+  'Support improvement: where it is included in the agreed scope, we support implementation and help your business work towards the intended improvements.',
 ];
 
 export const industries = ['Transport and fleet operations', 'Logistics', 'Warehousing', 'Distribution'];
@@ -146,44 +145,44 @@ export const services = [
 
 export const assessmentAreas = [
   {
-    name: 'Delivery and service performance',
-    detail: 'Dispatch, collection and delivery reliability, proof of delivery, service failures and customer experience.',
+    name: 'Demand, planning and customer service',
+    detail: 'How demand is managed, work is scheduled, capacity is allocated and customer requirements are fulfilled.',
   },
   {
-    name: 'Invoicing and financial administration',
-    detail: 'Job-to-invoice, supplier invoice matching, billing accuracy, disputes, reconciliation and cash timing.',
+    name: 'Transport, distribution and operational execution',
+    detail: 'How transport activities are planned, coordinated and delivered, including route planning, vehicle utilisation, delivery performance and operational communication.',
   },
   {
-    name: 'Fleet and transport costs',
-    detail: 'Fleet utilisation, vehicle availability, fuel, maintenance, cost allocation, empty running and subcontracted transport.',
+    name: 'Warehousing, inventory and materials flow',
+    detail: 'How stock, materials, storage space and warehouse activities are managed.',
   },
   {
-    name: 'Warehouse and inventory',
-    detail: 'Receiving, put-away, stock accuracy, storage, picking, packing, dispatch, returns and inventory control.',
+    name: 'Fleet, equipment and maintenance',
+    detail: 'How vehicles and equipment are maintained, utilised and managed, including downtime, maintenance planning and associated costs.',
   },
   {
-    name: 'Administration and information flow',
-    detail: 'Re-keying, document handling, record retrieval, hand-offs and repetitive admin work.',
+    name: 'Procurement, suppliers and subcontractors',
+    detail: 'How purchasing decisions are made, supplier relationships are managed and external services are controlled.',
   },
   {
-    name: 'Reporting and performance management',
-    detail: 'KPI definitions, data quality, reporting routines, targets and decision-making.',
+    name: 'Administration, information and order-to-cash',
+    detail: 'How information moves through the business, from receiving work and completing services to processing documentation and raising invoices.',
   },
   {
-    name: 'Process and workflow control',
-    detail: 'End-to-end process design, standard work, scheduling, bottlenecks, cycle time and rework.',
+    name: 'Financial, cost and commercial control',
+    detail: 'How operating costs, expenditure, margins and financial information are monitored and used to support decisions.',
   },
   {
-    name: 'Systems and technology',
-    detail: 'Transport, warehouse, ERP, telematics and finance systems, spreadsheets, integrations, adoption and data reliability.',
+    name: 'People, organisation and capability',
+    detail: 'How responsibilities, organisational structures, skills and communication affect the operation.',
   },
   {
-    name: 'People and organisation',
-    detail: 'Roles, ownership, skills, training, capacity, supervision, communication and key-person dependency.',
+    name: 'Systems, data and technology',
+    detail: 'How business systems, reporting tools and technology support operational activities and decision-making.',
   },
   {
-    name: 'Exceptions and resilience',
-    detail: 'Disruptions, breakdowns, late work, claims, escalation, root causes and recovery.',
+    name: 'Compliance, safety, risk and resilience',
+    detail: 'How the business manages regulatory obligations, operational risks, safety requirements and continuity.',
   },
 ];
 
@@ -272,25 +271,26 @@ export const reasons = [
   },
 ];
 
+// What MOAT does, in broad terms only. Its scoring, procedures, calculations and full methodology stay confidential.
 export const moatParts = [
   {
-    name: 'Business profile',
-    text: 'Agrees objectives, sites, period, workflows and exclusions before any fieldwork begins.',
+    name: 'Examining the business',
+    text: 'A consistent structure for examining how a business operates.',
   },
   {
-    name: 'Guided discovery',
-    text: 'A structured process for mapping how work actually moves and collecting evidence.',
+    name: 'Reviewing information',
+    text: 'A consistent way of reviewing processes, records and operational information.',
   },
   {
-    name: 'Specialist fieldwork modules',
-    text: 'Such as the proof-of-delivery to invoice review, used only where the workflow is in scope.',
+    name: 'Seeing the connections',
+    text: 'How different parts of the operation interact, rather than each problem in isolation.',
   },
   {
-    name: 'Scoring rubric',
-    text: 'Clear 1-5 definitions for each area, applied only where the evidence supports it.',
+    name: 'Identifying improvements',
+    text: 'Where improvements can be made, and which are practical and proportionate for the business.',
   },
   {
-    name: 'Quality checks and client report',
-    text: 'Checks completed before any findings are shared, and a clear client report.',
+    name: 'Presenting findings',
+    text: 'Findings presented clearly and consistently, with the information that supports them.',
   },
 ];

@@ -22,10 +22,6 @@ import Arrow from './Arrow.astro';
         <dt>areas we can assess</dt>
         <dd data-count="10">10</dd>
       </div>
-      <div data-reveal>
-        <dt>scoring, only where the evidence supports it</dt>
-        <dd>1&ndash;5</dd>
-      </div>
     </dl>
 
     <a href="/approach/#moat" class="link mt-12" data-reveal>See how MOAT works <Arrow /></a>
@@ -35,7 +31,7 @@ import Arrow from './Arrow.astro';
 <style>
   .stats {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 2.5rem 1rem;
     margin-top: clamp(3rem, 6vw, 5rem);
   }
@@ -62,10 +58,6 @@ import Arrow from './Arrow.astro';
   }
 
   @media (min-width: 768px) {
-    .stats {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
     .stats > div + div {
       border-left: 1px solid var(--color-navy);
     }

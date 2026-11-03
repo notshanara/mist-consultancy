@@ -208,7 +208,7 @@ I think this is worth it to reduce spam, but it adds one outside script.
 3. **Form provider:** set `PUBLIC_FORM_ENDPOINT`, restrict the form to your domain, turn on spam protection, and check that submissions show as plain text.
 4. **Turnstile:** set the site key, put the secret key in the provider's settings, and have the added privacy wording reviewed.
 5. **Domain:** confirm every subdomain supports HTTPS before going live, because `includeSubDomains` applies to all of them. Remove any unused DNS records to prevent subdomain takeover, and set up SPF, DKIM and DMARC for the published addresses.
-6. **security.txt:** confirm `info@mistconsultancy.co.uk` is the right place for security reports.
+6. **security.txt:** confirm `enquiries@mistconsultancy.co.uk` is the right place for security reports.
 
 ## Keeping it current
 

@@ -5,6 +5,6 @@ import { site } from '../../data/site';
 export const GET: APIRoute = ({ site: domain }) => {
   const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
   return new Response(
-    `Contact: mailto:${site.email.general}\nExpires: ${expires}\nPreferred-Languages: en\nCanonical: ${new URL('.well-known/security.txt', domain)}\n`,
+    `Contact: mailto:${site.email.enquiries}\nExpires: ${expires}\nPreferred-Languages: en\nCanonical: ${new URL('.well-known/security.txt', domain)}\n`,
   );
 };
