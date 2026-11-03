@@ -11,7 +11,7 @@ const chevron = 'M1 1.5l5 5 5-5';
 <header class="site-header bg-carbon text-pale" data-site-header>
   <div class="wrap bar">
     <a href="/" class="brand" aria-label="MIST Consultancy, home">
-      <Mark class="block h-[1.125rem] w-auto" />
+      <Mark class="block h-(--logo-h) w-auto" />
       <span>MIST Consultancy</span>
     </a>
 
@@ -84,13 +84,17 @@ const chevron = 'M1 1.5l5 5 5-5';
     height: var(--nav-h);
   }
 
+  /* Laid out like the logo: the name's capitals stand as tall as the mark, with only the M's own spacing between
+     them. Manrope's capitals are 0.72 of its size. Narrow phones shrink the whole lockup so Menu still fits. */
   .brand {
+    --logo-h: min(1.125rem, calc((100vw - 8.5rem) / 13.5));
     display: inline-flex;
-    align-items: center;
-    gap: 0.625rem;
+    align-items: baseline;
     color: var(--color-white);
+    font-size: calc(var(--logo-h) / 0.72);
     font-weight: 600;
     letter-spacing: 0.01em;
+    line-height: 1;
     white-space: nowrap;
   }
 
