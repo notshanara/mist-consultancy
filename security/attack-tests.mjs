@@ -61,7 +61,12 @@ if (builtHere) {
 const simulation = await startSimulation({ root, naive });
 const { logs } = simulation;
 const origin = sim.site;
-const pages = naive ? ['/index.html'] : ['/', '/services/', '/about/', '/approach/', '/contact/', '/privacy/'];
+// The problem pages under Our Approach are read from the build, so each new one is tested without being listed here.
+const subpages = (section) =>
+  readdirSync(join(root, section), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => `/${section}/${entry.name}/`);
+const pages = naive ? ['/index.html'] : ['/', '/services/', '/about/', '/approach/', ...subpages('approach'), '/contact/', '/privacy/'];
 
 await httpChecks({
   origin,

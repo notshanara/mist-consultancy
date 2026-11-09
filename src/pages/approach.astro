@@ -2,8 +2,8 @@
 import CtaBand from '../components/CtaBand.astro';
 import MoatLayers from '../components/MoatLayers.astro';
 import PageHero from '../components/PageHero.astro';
+import ProblemInbox from '../components/ProblemInbox.astro';
 import RouteDiagram from '../components/RouteDiagram.astro';
-import { principles } from '../data/content';
 import Base from '../layouts/Base.astro';
 ---
 
@@ -17,23 +17,7 @@ import Base from '../layouts/Base.astro';
   />
 
   <RouteDiagram />
-
-  <section id="principles" class="section-y bg-pale text-center" aria-labelledby="principles-title">
-    <div class="wrap">
-      <h2 id="principles-title" class="font-medium">Three principles</h2>
-      <ul class="mt-10 space-y-[clamp(4rem,10vw,8rem)]">
-        {
-          principles.map((principle) => (
-            <li>
-              <h3 class="mx-auto max-w-[24ch] text-statement" data-words data-words-from="0.85" data-words-to="0.6">{principle.name}</h3>
-              <p class="mx-auto mt-6 max-w-[52ch] text-lead" data-reveal>{principle.text}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
+  <ProblemInbox />
   <MoatLayers />
 
   <section id="founder-quote" class="section-y text-center" aria-labelledby="founder-quote-title">

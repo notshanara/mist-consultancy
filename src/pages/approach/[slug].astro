@@ -1,0 +1,488 @@
+---
+// One page for each problem in `problems`, laid out as a conversation between a business and MIST.
+import Arrow from '../../components/Arrow.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import Mark from '../../components/Mark.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProblemFlow from '../../components/ProblemFlow.astro';
+import ProblemNav from '../../components/ProblemNav.astro';
+import { assessmentAreas, problems } from '../../data/content';
+import Base from '../../layouts/Base.astro';
+
+export const getStaticPaths = () => problems.map((problem, index) => ({ params: { slug: problem.slug }, props: { index } }));
+
+const { index } = Astro.props;
+const problem = problems[index];
+const previous = problems[index - 1];
+const next = problems[index + 1];
+
+// The related areas must match the names on the Services page, so a typo stops the build.
+const unknown = problem.areas.filter((area) => !assessmentAreas.some((known) => known.name === area));
+if (unknown.length) throw new Error(`${problem.slug}: not an assessment area: ${unknown.join(', ')}`);
+---
+
+<Base
+  title={`${problem.title} | MIST Consultancy`}
+  description={problem.lead}
+  footnote="The conversations on these pages are illustrative. They do not quote a specific client."
+>
+  <PageHero
+    title={problem.title}
+    lead={problem.lead}
+    compact
+    crumbs={[
+      { href: '/approach/', label: 'Our approach' },
+      { href: '/approach/#problems', label: 'Problems we help solve' },
+    ]}
+  />
+
+  <section class="pt-0 pb-[clamp(4rem,2rem+6vw,8rem)] lg:pt-[clamp(3rem,2rem+3vw,5rem)]" aria-labelledby="chat-title">
+    <div class="wrap grid grid-cols-[minmax(0,1fr)] lg:grid-cols-12 lg:gap-x-8">
+      <ProblemNav current={problem.slug} class="lg:col-span-4" />
+
+      <div class="window lg:col-span-8">
+        <div class="head">
+          <span class="avatar avatar-mist"><Mark class="block h-4 w-auto" /></span>
+          <div class="min-w-0">
+            <h2 id="chat-title" class="font-semibold leading-tight">MIST Consultancy</h2>
+            <p class="text-sm text-iron">An illustrative conversation</p>
+          </div>
+          <p class="ml-auto text-sm text-iron">{index + 1} of {problems.length}</p>
+        </div>
+
+        <ol class="chat">
+          <li class="msg you start" data-reveal>
+            <p class="who">You</p>
+            <div class="bubble"><p>{problem.opener}</p></div>
+          </li>
+
+          <li class="msg mist start typing" data-reveal>
+            <p class="who"><span class="avatar avatar-mist avatar-sm"><Mark class="block h-2.5 w-auto" /></span>MIST</p>
+            <div class="bubble">
+              <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              <p>{problem.reply}</p>
+            </div>
+          </li>
+
+          <li class="msg mist card" data-reveal>
+            <div class="bubble">
+              <h3 class="font-semibold">{problem.issuesTitle}</h3>
+              <ul class="issues">
+                {
+                  problem.issues.map((issue) => (
+                    <li>
+                      <span class="issue-icon">
+                        <Icon name={issue.icon} class="size-5" />
+                      </span>
+                      <span>{issue.text}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </li>
+
+          <li class="msg mist card" data-reveal>
+            <div class="bubble">
+              <ProblemFlow title={problem.flowTitle} steps={problem.flow} zone={problem.zone} zoneLabel={problem.zoneLabel} />
+            </div>
+          </li>
+
+          <li class="msg you start" data-reveal>
+            <p class="who">You</p>
+            <div class="bubble"><p>{problem.question}</p></div>
+          </li>
+
+          <li class="msg mist start typing" data-reveal>
+            <p class="who"><span class="avatar avatar-mist avatar-sm"><Mark class="block h-2.5 w-auto" /></span>MIST</p>
+            <div class="bubble">
+              <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              <p>{problem.answer}</p>
+            </div>
+          </li>
+
+          {
+            problem.figures && (
+              <li class="msg mist card" data-reveal>
+                <div class="bubble">
+                  <h3 class="font-semibold">How we describe a financial effect</h3>
+                  <ul class="figures">
+                    {problem.figures.map((figure, i) => (
+                      <li>
+                        <span class:list={['certainty', `certainty-${i + 1}`]} aria-hidden="true" />
+                        <span class="block font-medium">{figure.name}</span>
+                        <span class="block text-sm text-iron">{figure.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            )
+          }
+
+          <li class="msg mist" data-reveal>
+            <div class="bubble"><p>{problem.aim}</p></div>
+          </li>
+        </ol>
+
+        <div class="close" data-reveal>
+          <p class="system">Every problem is examined as part of the whole operation. Related assessment areas:</p>
+          <ul class="areas">
+            {problem.areas.map((area) => <li><a href="/services/#assess">{area}</a></li>)}
+          </ul>
+
+          <nav class="replies" aria-label="More problems">
+            {
+              next ? (
+                <a href={`/approach/${next.slug}/`} class="reply reply-main">
+                  <span><span class="block text-sm text-pale">Next problem</span>{next.title}</span>
+                  <Arrow />
+                </a>
+              ) : (
+                <a href="/approach/#problems" class="reply reply-main">
+                  <span><span class="block text-sm text-pale">That’s all five</span>Back to Our approach</span>
+                  <Arrow />
+                </a>
+              )
+            }
+            {
+              previous && (
+                <a href={`/approach/${previous.slug}/`} class="reply">
+                  <span><span class="block text-sm text-iron">Previous problem</span>{previous.title}</span>
+                </a>
+              )
+            }
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  /* The conversation sits in a pale window, like a messaging app: MIST on the left, you on the right. */
+  .window {
+    --cut: 1rem;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 1.5rem var(--gutter) 2rem;
+    background: var(--color-pale);
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-slate) 60%, var(--color-pale));
+  }
+
+  .avatar {
+    --cut: 0.375rem;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  .avatar-mist {
+    background: var(--color-carbon);
+    color: var(--color-white);
+  }
+
+  .avatar-sm {
+    --cut: 0.25rem;
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+
+  .chat {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+  }
+
+  .msg {
+    max-width: min(36rem, 92%);
+    margin-top: 0.5rem;
+  }
+
+  .msg.start {
+    margin-top: 1.75rem;
+  }
+
+  .msg:first-child {
+    margin-top: 0;
+  }
+
+  .mist {
+    align-self: flex-start;
+  }
+
+  .you {
+    align-self: flex-end;
+    max-width: min(30rem, 85%);
+  }
+
+  .card {
+    width: min(38rem, 100%);
+    max-width: none;
+  }
+
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .you .who {
+    justify-content: flex-end;
+  }
+
+  .bubble {
+    --cut: 0.625rem;
+    position: relative;
+    padding: 0.875rem 1.125rem;
+    background: var(--color-white);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  .you .bubble {
+    background: var(--color-gunmetal);
+    color: var(--color-white);
+  }
+
+  .card .bubble {
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
+
+  .issues {
+    margin-top: 0.75rem;
+  }
+
+  .issues li {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding-block: 0.625rem;
+    border-top: 1px solid var(--color-pale);
+    line-height: 1.4;
+  }
+
+  .issues li:first-child {
+    border-top: 0;
+  }
+
+  .issue-icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: var(--color-pale);
+    color: var(--color-carbon);
+  }
+
+  .figures {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  /* Three marks that fill in as a figure becomes more certain: estimated, identified, then measured. */
+  .certainty {
+    position: relative;
+    display: block;
+    width: 2rem;
+    height: 0.5rem;
+    margin-bottom: 0.625rem;
+    border: 1px dashed var(--color-navy);
+  }
+
+  .certainty-2 {
+    border-style: solid;
+  }
+
+  .certainty-3 {
+    border-style: solid;
+    background: var(--color-navy);
+  }
+
+  .close {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-slate) 60%, var(--color-pale));
+  }
+
+  .system {
+    color: var(--color-iron);
+    font-size: 0.9375rem;
+  }
+
+  .areas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .areas a {
+    display: block;
+    padding: 0.3125rem 0.75rem;
+    border: 1px solid var(--color-iron);
+    font-size: 0.875rem;
+    transition: background-color 0.25s ease;
+  }
+
+  .areas a:hover {
+    background: var(--color-white);
+  }
+
+  /* Suggested replies, as a messaging app offers them: the next problem, or the previous one. */
+  .replies {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .reply {
+    --cut: 0.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 1.125rem;
+    background: var(--color-white);
+    font-weight: 600;
+    line-height: 1.35;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.25s ease;
+  }
+
+  .reply :global(svg) {
+    flex: none;
+    transition: transform 0.4s var(--ease);
+  }
+
+  .reply:hover :global(svg) {
+    transform: translateX(0.3rem);
+  }
+
+  .reply:focus-visible {
+    outline-offset: -5px;
+  }
+
+  .reply-main {
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+
+  .reply-main:hover {
+    background: var(--color-carbon);
+  }
+
+  .reply:not(.reply-main):hover {
+    background: color-mix(in srgb, var(--color-pale) 35%, var(--color-white));
+  }
+
+  /* The typing dots, shown only while a reply arrives with motion on. */
+  .dots {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .figures {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .replies {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .window {
+      margin-inline: 0;
+      padding: 1.5rem clamp(1.5rem, 3vw, 2.5rem) 2.5rem;
+      clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    }
+  }
+
+  :global(html.motion) .typing .dots {
+    position: absolute;
+    top: 50%;
+    left: 1.125rem;
+    display: flex;
+    gap: 0.3rem;
+    translate: 0 -50%;
+  }
+
+  :global(html.motion) .typing .dots span {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    background: var(--color-slate);
+    animation: dot 0.9s ease-in-out infinite;
+  }
+
+  :global(html.motion) .typing .dots span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  :global(html.motion) .typing .dots span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  :global(html.motion) .typing .bubble p {
+    opacity: 0;
+  }
+
+  :global(html.motion) .typing:global(.is-in) .dots {
+    animation: fade-out 0.2s ease 0.75s both;
+  }
+
+  :global(html.motion) .typing:global(.is-in) .bubble p {
+    animation: fade-in 0.4s ease 0.85s both;
+  }
+
+  @keyframes dot {
+    50% {
+      background: var(--color-iron);
+      translate: 0 -0.1875rem;
+    }
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media print {
+    :global(html.motion) .typing .bubble p {
+      opacity: 1;
+      animation: none;
+    }
+
+    :global(html.motion) .typing .dots {
+      display: none;
+    }
+  }
+</style>

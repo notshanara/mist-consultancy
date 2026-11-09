@@ -4,6 +4,9 @@ import { headerNav, moreNav, site } from '../data/site';
 
 const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isHere = (href: string) => (href.replace(/\/$/, '') || '/') === here;
+// A page within a section, such as one of the problem pages under Our Approach, marks its section's link.
+const isWithin = (href: string) => href !== '/' && here.startsWith(href.replace(/\/$/, '') + '/');
+const current = (href: string) => (isHere(href) ? 'page' : isWithin(href) ? 'true' : undefined);
 const moreIsHere = moreNav.some((item) => isHere(item.href));
 const chevron = 'M1 1.5l5 5 5-5';
 ---
@@ -20,7 +23,7 @@ const chevron = 'M1 1.5l5 5 5-5';
         {
           headerNav.map((item) => (
             <li>
-              <a href={item.href} class="item" aria-current={isHere(item.href) ? 'page' : undefined}>
+              <a href={item.href} class="item" aria-current={current(item.href)}>
                 {item.label}
               </a>
             </li>
@@ -41,7 +44,7 @@ const chevron = 'M1 1.5l5 5 5-5';
             {
               headerNav.map((item) => (
                 <li class="narrow">
-                  <a href={item.href} aria-current={isHere(item.href) ? 'page' : undefined}>
+                  <a href={item.href} aria-current={current(item.href)}>
                     {item.label}
                   </a>
                 </li>
@@ -50,7 +53,7 @@ const chevron = 'M1 1.5l5 5 5-5';
             {
               moreNav.map((item) => (
                 <li>
-                  <a href={item.href} aria-current={isHere(item.href) ? 'page' : undefined}>
+                  <a href={item.href} aria-current={current(item.href)}>
                     {item.label}
                   </a>
                 </li>

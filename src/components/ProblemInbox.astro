@@ -1,0 +1,111 @@
+---
+// The problems as a list of conversations, each opening its own page.
+import Arrow from './Arrow.astro';
+import Icon from './Icon.astro';
+import { problems } from '../data/content';
+---
+
+<section id="problems" class="section-y bg-pale" aria-labelledby="problems-title">
+  <div class="wrap">
+    <h2 id="problems-title" class="mx-auto max-w-[20ch] text-center text-title" data-reveal>The problems we help solve.</h2>
+    <p class="mx-auto mt-5 max-w-[50ch] text-center text-lead text-iron i-1" data-reveal>
+      Five common starting points. Whichever one brings you to us, we examine it as part of the whole operation.
+    </p>
+
+    <ol class="inbox" data-reveal-group>
+      {
+        problems.map((problem, i) => (
+          <li data-reveal>
+            <a href={`/approach/${problem.slug}/`} class="row">
+              <span class="avatar">
+                <Icon name={problem.icon} class="size-6" />
+              </span>
+              <span class="min-w-0 flex-1">
+                <span class="flex items-baseline gap-3">
+                  <span class="text-subheading">{problem.title}</span>
+                  <span class="ml-auto hidden flex-none text-sm text-iron sm:inline">{i + 1} of {problems.length}</span>
+                </span>
+                <span class="preview">You: {problem.opener}</span>
+              </span>
+              <span class="go">
+                <Arrow />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .inbox {
+    --cut: 1rem;
+    max-width: 58rem;
+    margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+    background: var(--color-white);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  .inbox li + li {
+    border-top: 1px solid var(--color-pale);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem clamp(1rem, 3vw, 2rem);
+    transition: background-color 0.25s ease;
+  }
+
+  .row:hover {
+    background: color-mix(in srgb, var(--color-pale) 35%, var(--color-white));
+  }
+
+  .row:focus-visible {
+    outline-offset: -4px;
+  }
+
+  .avatar {
+    --cut: 0.5rem;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    background: var(--color-gunmetal);
+    color: var(--color-white);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.25s ease;
+  }
+
+  .row:hover .avatar {
+    background: var(--color-carbon);
+  }
+
+  .preview {
+    display: -webkit-box;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    color: var(--color-iron);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .go {
+    flex: none;
+    color: var(--color-navy);
+    transition: transform 0.4s var(--ease);
+  }
+
+  .row:hover .go {
+    transform: translateX(0.3rem);
+  }
+
+  @media (min-width: 768px) {
+    .preview {
+      -webkit-line-clamp: 1;
+    }
+  }
+</style>

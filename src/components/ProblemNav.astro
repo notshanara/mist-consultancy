@@ -1,0 +1,207 @@
+---
+// A list of threads beside the conversation on wide screens, and a row of tabs under the header on phones.
+import Icon from './Icon.astro';
+import { problems } from '../data/content';
+
+interface Props {
+  /** Slug of the problem on screen. */
+  current: string;
+  class?: string;
+}
+const { current, class: className } = Astro.props;
+---
+
+<nav class:list={['problem-nav', className]} aria-labelledby="problem-nav-title">
+  <p id="problem-nav-title" class="title">Problems we help solve</p>
+  <ol class="threads" data-problem-tabs>
+    {
+      problems.map((problem) => (
+        <li>
+          <a href={`/approach/${problem.slug}/`} class="thread" aria-current={problem.slug === current ? 'page' : undefined}>
+            <span class="avatar">
+              <Icon name={problem.icon} class="size-5" />
+            </span>
+            <span class="text">
+              <span class="long">{problem.title}</span>
+              <span class="short">{problem.tab}</span>
+              <span class="preview">You: {problem.opener}</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  /* Phones: a row of tabs that stays under the header, so the next problem is always one tap away. */
+  .problem-nav {
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 20;
+    margin-inline: calc(var(--gutter) * -1);
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-pale);
+  }
+
+  .title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .threads {
+    position: relative;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.625rem var(--gutter);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .threads::-webkit-scrollbar {
+    display: none;
+  }
+
+  .thread {
+    --cut: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.3125rem 0.875rem 0.3125rem 0.3125rem;
+    background: var(--color-pale);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.25;
+    white-space: nowrap;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .thread:focus-visible {
+    outline-offset: -4px;
+  }
+
+  .avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    background: var(--color-white);
+    color: var(--color-carbon);
+  }
+
+  .thread[aria-current] {
+    background: var(--color-carbon);
+    color: var(--color-white);
+  }
+
+  .long,
+  .preview {
+    display: none;
+  }
+
+  /* Wide screens: the threads sit beside the conversation, like the list in a messaging app. */
+  @media (min-width: 1024px) {
+    .problem-nav {
+      top: calc(var(--nav-h) + 2rem);
+      align-self: start;
+      margin-inline: 0;
+      border-bottom: 0;
+    }
+
+    .title {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--color-carbon);
+      font-weight: 600;
+      white-space: normal;
+    }
+
+    .threads {
+      display: block;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .threads li {
+      border-bottom: 1px solid var(--color-pale);
+    }
+
+    .thread {
+      --cut: 0.625rem;
+      align-items: flex-start;
+      gap: 0.875rem;
+      padding: 1rem 0.875rem 1rem 0.75rem;
+      background: transparent;
+      font-size: 1rem;
+      white-space: normal;
+    }
+
+    .thread:hover {
+      background: color-mix(in srgb, var(--color-pale) 45%, var(--color-white));
+    }
+
+    .avatar {
+      --cut: 0.375rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: var(--color-gunmetal);
+      color: var(--color-white);
+      clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    }
+
+    .thread[aria-current] {
+      background: var(--color-pale);
+      color: var(--color-carbon);
+      box-shadow: inset 2px 0 var(--color-navy);
+    }
+
+    .thread[aria-current] .avatar {
+      background: var(--color-carbon);
+    }
+
+    .text {
+      min-width: 0;
+      padding-top: 0.125rem;
+    }
+
+    .long {
+      display: block;
+      font-weight: 600;
+    }
+
+    .short {
+      display: none;
+    }
+
+    .preview {
+      display: -webkit-box;
+      margin-top: 0.25rem;
+      overflow: hidden;
+      color: var(--color-iron);
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.45;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+  }
+</style>
+
+<script>
+  // On phones, scroll the tab row so the current problem is in view.
+  const tabs = document.querySelector<HTMLElement>('[data-problem-tabs]');
+  const current = tabs?.querySelector<HTMLElement>('[aria-current]');
+  if (tabs && current && tabs.scrollWidth > tabs.clientWidth) {
+    tabs.scrollLeft = current.offsetLeft - (tabs.clientWidth - current.offsetWidth) / 2;
+  }
+</script>

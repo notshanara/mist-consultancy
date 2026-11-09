@@ -1,4 +1,5 @@
 // Repeating website content. Edit the wording here and every page that uses it updates.
+import type { IconName } from './icons';
 
 export const stages = [
   {
@@ -241,6 +242,203 @@ export const principles = [
   {
     name: 'Technology should solve a problem, not become the objective itself.',
     text: 'Automation and AI can be part of a solution where they fit, alongside changes to process, controls and reporting.',
+  },
+];
+
+// The problems MIST may help solve. Each one is a starting point, not a separate service, and is still examined as
+// part of the whole operation. Each gets its own page under Our Approach, written as an illustrative conversation:
+// `opener` and `question` are what a business might say, and everything else is MIST's reply.
+// In `flow`, `held` marks where work gets held up, and `zone` gives the first and last steps MIST examines.
+interface Problem {
+  slug: string;
+  icon: IconName;
+  title: string;
+  /** Short name for the tabs. */
+  tab: string;
+  lead: string;
+  opener: string;
+  reply: string;
+  issuesTitle: string;
+  issues: { icon: IconName; text: string }[];
+  flowTitle: string;
+  flow: { icon: IconName; label: string; note?: string; held?: boolean; outcome?: boolean }[];
+  zone: [number, number];
+  zoneLabel: string;
+  question: string;
+  answer: string;
+  figures?: { name: string; text: string }[];
+  aim: string;
+  /** Names from assessmentAreas. */
+  areas: string[];
+}
+
+export const problems: Problem[] = [
+  {
+    slug: 'delivery-to-invoice',
+    icon: 'receipt',
+    title: 'Delivery-to-invoice efficiency',
+    tab: 'Delivery to invoice',
+    lead: 'What happens after a delivery or job is completed, and before the business is able to issue an accurate invoice.',
+    opener: 'Our deliveries go out on time. It’s everything afterwards that drags, and invoices can go out days later than they should.',
+    reply: 'Then that’s where we start: what happens between a job being completed and an accurate invoice being raised.',
+    issuesTitle: 'Where completed work tends to get held up',
+    issues: [
+      { icon: 'pod', text: 'Proof of delivery not received, captured or stored promptly' },
+      { icon: 'layers', text: 'Missing paperwork or incomplete job records' },
+      { icon: 'alert', text: 'Delays in resolving delivery exceptions' },
+      { icon: 'search', text: 'Manual checking and reconciliation' },
+      { icon: 'message', text: 'Repeated requests for documents or information' },
+      { icon: 'clock', text: 'Work completed but not yet invoice-ready' },
+      { icon: 'repeat', text: 'Avoidable rework between operations and accounts' },
+    ],
+    flowTitle: 'Where MIST steps in',
+    flow: [
+      { icon: 'truck', label: 'Job completed' },
+      { icon: 'pod', label: 'Proof of delivery', note: 'Not received, captured or stored promptly', held: true },
+      { icon: 'layers', label: 'Job record', note: 'Paperwork missing or incomplete', held: true },
+      { icon: 'search', label: 'Checks and exceptions', note: 'Checked by hand, and exceptions slow to resolve', held: true },
+      { icon: 'repeat', label: 'Invoice-ready', note: 'Rework between operations and accounts', held: true },
+      { icon: 'receipt', label: 'Invoice issued', outcome: true },
+    ],
+    zone: [1, 4],
+    zoneLabel: 'We trace each hold-up to its cause, including the hand-offs between operations and accounts.',
+    question: 'So how much is the delay costing us?',
+    answer: 'We won’t assume a figure. A delay doesn’t automatically mean lost revenue, so any financial effect is established from the evidence.',
+    aim: 'The aim is to identify where the process gets held up, why it happens and what could help completed work move to invoicing more reliably.',
+    areas: ['Administration, information and order-to-cash', 'Financial, cost and commercial control'],
+  },
+  {
+    slug: 'fleet-utilisation',
+    icon: 'truck',
+    title: 'Fleet and resource utilisation',
+    tab: 'Fleet utilisation',
+    lead: 'Whether vehicles, drivers, equipment and operational capacity are being used effectively.',
+    opener: 'Some days we’re short of vehicles. On others, half the fleet seems to be standing still.',
+    reply: 'We look at how your vehicles, drivers, equipment and capacity are actually being used, and why.',
+    issuesTitle: 'What we look at',
+    issues: [
+      { icon: 'pause', text: 'Vehicle utilisation and idle time' },
+      { icon: 'route', text: 'Empty running and scheduling' },
+      { icon: 'clock', text: 'Waiting time and avoidable delays' },
+      { icon: 'users', text: 'Allocation of vehicles, drivers and jobs' },
+      { icon: 'wrench', text: 'Downtime and maintenance coordination' },
+      { icon: 'eye', text: 'Visibility of available capacity' },
+    ],
+    flowTitle: 'Where MIST steps in',
+    flow: [
+      { icon: 'calendar', label: 'Jobs planned' },
+      { icon: 'users', label: 'Vehicles and drivers allocated', note: 'Without a clear view of the capacity available', held: true },
+      { icon: 'truck', label: 'On the road', note: 'Empty running, waiting time and avoidable delays', held: true },
+      { icon: 'pause', label: 'Between jobs', note: 'Vehicles and drivers standing idle', held: true },
+      { icon: 'wrench', label: 'Maintenance', note: 'Downtime not coordinated with planning', held: true },
+    ],
+    zone: [1, 4],
+    zoneLabel: 'We look at how capacity is used at each point, and the reasons behind any inefficiency.',
+    question: 'We already track utilisation. Isn’t that enough?',
+    answer: 'Figures show what happened. We look for the reasons behind them, because a utilisation figure without context rarely tells you what to change.',
+    aim: 'The focus is on understanding how the operation is used and why, not simply producing utilisation figures.',
+    areas: ['Transport, distribution and operational execution', 'Fleet, equipment and maintenance', 'Demand, planning and customer service'],
+  },
+  {
+    slug: 'operational-administration',
+    icon: 'checklist',
+    title: 'Operational administration',
+    tab: 'Administration',
+    lead: 'Unnecessary administrative effort, repeated work and information gaps that make operations harder to manage.',
+    opener: 'My team spends hours typing the same details into different places and chasing the same paperwork.',
+    reply: 'That effort usually points to how information moves through the business, so that is what we look at.',
+    issuesTitle: 'Where the effort tends to go',
+    issues: [
+      { icon: 'keyboard', text: 'Duplicate data entry' },
+      { icon: 'checklist', text: 'Manual tracking and reporting' },
+      { icon: 'message', text: 'Repeated document chasing' },
+      { icon: 'handoff', text: 'Unclear hand-offs between departments' },
+      { icon: 'copy', text: 'Re-entering information across different systems' },
+      { icon: 'chart', text: 'Reports that take too long to prepare or are not useful for decisions' },
+    ],
+    flowTitle: 'Where MIST steps in',
+    flow: [
+      { icon: 'message', label: 'Information received' },
+      { icon: 'keyboard', label: 'Entered into a system', note: 'Keyed again into another system or spreadsheet', held: true },
+      { icon: 'handoff', label: 'Passed between departments', note: 'Unclear who owns the next step', held: true },
+      { icon: 'document', label: 'Documents gathered', note: 'Paperwork chased more than once', held: true },
+      { icon: 'chart', label: 'Report prepared', note: 'Slow to prepare, or not used for decisions', held: true },
+    ],
+    zone: [1, 4],
+    zoneLabel: 'We follow information through the business to find where effort is repeated or lost.',
+    question: 'Do we need a new system to fix this?',
+    answer: 'Not necessarily. The answer is often a clearer process or better use of the systems you already have. We recommend the simplest workable solution.',
+    aim: 'The aim is to identify where effort is being repeated or lost, and what would make the operation easier to manage.',
+    areas: ['Administration, information and order-to-cash', 'People, organisation and capability', 'Systems, data and technology'],
+  },
+  {
+    slug: 'cost-visibility',
+    icon: 'pound',
+    title: 'Cost and profitability visibility',
+    tab: 'Cost visibility',
+    lead: 'Where operational costs arise, and how operational decisions affect commercial performance.',
+    opener: 'We’re busy, but I can’t say for certain which jobs or routes actually make money.',
+    reply: 'We help you see where operational costs arise and how day-to-day decisions affect your margins.',
+    issuesTitle: 'What we look at',
+    issues: [
+      { icon: 'route', text: 'Job and route costing' },
+      { icon: 'coins', text: 'Cost allocation and visibility' },
+      { icon: 'chart', text: 'Operational reporting' },
+      { icon: 'repeat', text: 'Reconciliation between operational and financial records' },
+      { icon: 'falling', text: 'Identification of avoidable expenditure' },
+      { icon: 'clock', text: 'The effect of delays, downtime or rework on margins' },
+    ],
+    flowTitle: 'Where MIST steps in',
+    flow: [
+      { icon: 'truck', label: 'Job carried out' },
+      { icon: 'coins', label: 'Costs recorded', note: 'Not allocated to jobs or routes', held: true },
+      { icon: 'document', label: 'Operational records' },
+      { icon: 'repeat', label: 'Reconciled with finance', note: 'Operational and financial records do not match', held: true },
+      { icon: 'chart', label: 'Margin understood', note: 'The effect of delays, downtime and rework is not visible', held: true },
+    ],
+    zone: [1, 4],
+    zoneLabel: 'We connect operational activity to cost, so you can see what affects your margins.',
+    question: 'Will you tell us how much we could save?',
+    answer: 'Only where the data and assumptions are reliable enough to support a figure. When we give one, we always say which kind it is.',
+    figures: [
+      { name: 'Estimate', text: 'Worked out from the available data and stated assumptions.' },
+      { name: 'Opportunity', text: 'An improvement that has been identified but not yet made.' },
+      { name: 'Realised saving', text: 'Measured once a change is in place.' },
+    ],
+    aim: 'The aim is to help you understand where costs arise and how operational decisions affect commercial performance.',
+    areas: ['Financial, cost and commercial control', 'Transport, distribution and operational execution', 'Administration, information and order-to-cash'],
+  },
+  {
+    slug: 'technology-adoption',
+    icon: 'link',
+    title: 'Technology adoption and integration',
+    tab: 'Technology',
+    lead: 'Whether existing systems are being used effectively, and whether technology could solve a clearly understood operational problem.',
+    opener: 'Our systems don’t talk to each other. Should we be buying new software?',
+    reply: 'Possibly, but not by default. First we establish what is really causing the problem.',
+    issuesTitle: 'What we look at',
+    issues: [
+      { icon: 'window', text: 'Underused features in existing software' },
+      { icon: 'disconnected', text: 'Disconnected systems and repeated data entry' },
+      { icon: 'database', text: 'Poor data capture or inconsistent records' },
+      { icon: 'bolt', text: 'Manual processes that could be simplified or automated' },
+      { icon: 'gap', text: 'Technology gaps that genuinely prevent an effective process' },
+    ],
+    flowTitle: 'What we check first',
+    flow: [
+      { icon: 'checklist', label: 'Process design', note: 'Is the process itself the cause?' },
+      { icon: 'sliders', label: 'System configuration', note: 'Is the system set up for the way you work?' },
+      { icon: 'users', label: 'Staff adoption', note: 'Are people able to use what is already there?' },
+      { icon: 'database', label: 'Data quality', note: 'Is information captured accurately and consistently?' },
+      { icon: 'gap', label: 'Technology limitation', note: 'Is there a genuine gap that prevents an effective process?' },
+      { icon: 'bolt', label: 'New or changed technology', note: 'Recommended only where it solves a clearly understood problem', outcome: true },
+    ],
+    zone: [0, 4],
+    zoneLabel: 'We check each possible cause in turn before recommending new software.',
+    question: 'And if it does turn out to be the technology?',
+    answer: 'Then we recommend what fits the problem and your business, and can coordinate specialist technical development where it is needed.',
+    aim: 'Technology should solve a problem, not become the objective itself.',
+    areas: ['Systems, data and technology', 'People, organisation and capability'],
   },
 ];
 

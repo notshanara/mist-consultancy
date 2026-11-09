@@ -1,0 +1,209 @@
+---
+// The route a piece of work takes, with the points where it gets held up and a bracket over the steps MIST examines.
+import Icon from './Icon.astro';
+import Mark from './Mark.astro';
+import type { problems } from '../data/content';
+
+type Problem = (typeof problems)[number];
+
+interface Props {
+  title: string;
+  steps: Problem['flow'];
+  zone: Problem['zone'];
+  zoneLabel: string;
+}
+const { title, steps, zone, zoneLabel } = Astro.props;
+const [first, last] = zone;
+const anyHeld = steps.some((step) => step.held);
+---
+
+<figure class="flow">
+  <h3 class="font-semibold">{title}</h3>
+  <ol class="steps">
+    {
+      steps.map((step, i) => (
+        <li class:list={['step', { held: step.held, outcome: step.outcome, 'zone-in': i >= first && i <= last, 'zone-first': i === first, 'zone-last': i === last }]}>
+          <span class="node">
+            <Icon name={step.icon} class="size-5" />
+          </span>
+          <span class="text">
+            <span class="block font-medium">{step.label}</span>
+            {step.note && (
+              <span class="note">
+                {step.held && <Icon name="alert" class="mt-0.5 size-4 flex-none" />}
+                <span>{step.note}</span>
+              </span>
+            )}
+          </span>
+          <span class="zone" aria-hidden="true">
+            {i === first && <Mark class="block h-[1.125rem] w-auto" />}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  <figcaption class="legend">
+    <p class="key">
+      <span class="swatch swatch-zone" aria-hidden="true"><Mark class="block h-3 w-auto" /></span>
+      <span><strong>Where MIST steps in.</strong> {zoneLabel}</span>
+    </p>
+    {
+      anyHeld && (
+        <p class="key">
+          <span class="swatch swatch-held" aria-hidden="true" />
+          <span><strong>Where work gets held up.</strong> Marked with a dashed outline.</span>
+        </p>
+      )
+    }
+  </figcaption>
+</figure>
+
+<style>
+  .flow {
+    --node: 2.75rem;
+  }
+
+  .steps {
+    margin-top: 1.25rem;
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--node) 1fr 2rem;
+    column-gap: 0.875rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .step:last-child {
+    padding-bottom: 0;
+  }
+
+  /* The line from each step to the next. */
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: var(--node);
+    bottom: 0;
+    left: calc(var(--node) / 2 - 0.5px);
+    border-left: 1px solid var(--color-blue);
+  }
+
+  .node {
+    --cut: 0.5rem;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--node);
+    height: var(--node);
+    background: var(--color-pale);
+    color: var(--color-carbon);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  .held .node {
+    border: 1px dashed var(--color-iron);
+    background: var(--color-white);
+    clip-path: none;
+  }
+
+  .outcome .node {
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+
+  .text {
+    padding-top: 0.6875rem;
+    line-height: 1.4;
+  }
+
+  .note {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    color: var(--color-iron);
+    font-size: 0.9375rem;
+  }
+
+  /* The bracket: a navy line down the right-hand side of the steps MIST examines, marked at the top. */
+  .zone {
+    position: relative;
+  }
+
+  .zone-in .zone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -1.25rem;
+    left: calc(50% - 1px);
+    border-left: 2px solid var(--color-navy);
+  }
+
+  .zone-first .zone::before {
+    top: 1.5rem;
+  }
+
+  .zone-last .zone::before {
+    bottom: auto;
+    height: calc(var(--node) / 2);
+  }
+
+  .zone-first.zone-last .zone::before {
+    height: calc(var(--node) / 2 - 1.5rem);
+  }
+
+  .zone-last .zone::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--node) / 2 - 2px);
+    left: calc(50% - 0.625rem);
+    width: 0.625rem;
+    border-top: 2px solid var(--color-navy);
+  }
+
+  .zone :global(svg) {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    color: var(--color-navy);
+    transform: translateX(-50%);
+  }
+
+  .legend {
+    display: grid;
+    gap: 0.625rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-pale);
+    color: var(--color-iron);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .legend strong {
+    color: var(--color-carbon);
+  }
+
+  .key {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .swatch {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.0625rem;
+  }
+
+  .swatch-zone {
+    border-left: 2px solid var(--color-navy);
+    color: var(--color-navy);
+  }
+
+  .swatch-held {
+    border: 1px dashed var(--color-iron);
+  }
+</style>

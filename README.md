@@ -15,6 +15,8 @@ npm run build    # production files in dist/
 | Page wording and order of sections | `src/pages/` (one file per page) |
 | Header links and the More menu | `headerNav` and `moreNav` in `src/data/site.ts` |
 | Services, stages, highlights, process steps, principles, MOAT | `src/data/content.ts` |
+| The five problem pages under Our Approach | `problems` in `src/data/content.ts`. Each one becomes a page at `/approach/<slug>/`, laid out as an illustrative conversation by `src/pages/approach/[slug].astro` |
+| Icons | `src/data/icons.ts`, drawn for this site on a 24-unit grid |
 | Contact details and navigation | `src/data/site.ts` |
 | Colours, type sizes and shared animation | `src/styles/global.css` |
 | Scroll behaviour shared by every page | `src/scripts/motion.ts` |
@@ -53,6 +55,7 @@ They are used in:
 - the header's marker under the current page
 - the MOAT figures
 - the route lines on Home, About and Our Approach, and the step markers on Our Approach
+- on the problem pages: the flow lines (blue), and the "where MIST steps in" bracket, final steps and next-problem button (navy)
 - buttons on light backgrounds
 - text selection
 

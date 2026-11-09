@@ -4,14 +4,18 @@ import TonalEdge from './TonalEdge.astro';
 interface Props {
   title: string;
   lead: string;
+  /** A shorter hero, for pages within a section, so their content starts sooner. */
+  compact?: boolean;
+  /** The pages above this one, shown as a trail over the title. */
+  crumbs?: { href: string; label: string }[];
 }
-const { title, lead } = Astro.props;
+const { title, lead, compact = false, crumbs } = Astro.props;
 
 const ratio = 0.66;
 const tones = ['text-gunmetal', 'text-iron', 'text-slate', 'text-pale', 'text-white'];
 ---
 
-<section class="hero bg-carbon text-white" data-scrub="leave">
+<section class:list={['hero bg-carbon text-white', { compact }]} data-scrub="leave">
   <svg class="field" viewBox="-114 -107 228 214" aria-hidden="true">
     {
       tones.map((tone, i) => (
@@ -22,7 +26,20 @@ const tones = ['text-gunmetal', 'text-iron', 'text-slate', 'text-pale', 'text-wh
     }
   </svg>
   <div class="copy wrap">
-    <h1 class="intro mx-auto max-w-[18ch] text-display">{title}</h1>
+    {
+      crumbs && (
+        <nav aria-label="Breadcrumb" class="intro mb-6">
+          <ol class="crumbs">
+            {crumbs.map((crumb) => (
+              <li>
+                <a href={crumb.href}>{crumb.label}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    <h1 class:list={['intro mx-auto max-w-[18ch]', compact ? 'text-title' : 'text-display']}>{title}</h1>
     <p class="intro mx-auto mt-6 max-w-[42ch] text-lead text-pale i-1">{lead}</p>
     <slot />
   </div>
@@ -42,6 +59,37 @@ const tones = ['text-gunmetal', 'text-iron', 'text-slate', 'text-pale', 'text-wh
     padding-bottom: clamp(13rem, 32svh, 20rem);
   }
 
+  .compact .copy {
+    padding-top: clamp(2.5rem, 6svh, 4.5rem);
+    padding-bottom: clamp(8rem, 18svh, 11rem);
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem 0.75rem;
+    color: var(--color-pale);
+    font-size: 0.9375rem;
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.75rem;
+    color: var(--color-slate);
+  }
+
+  .crumbs a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+    transition: color 0.25s ease;
+  }
+
+  .crumbs a:hover {
+    color: var(--color-white);
+  }
+
   /* The mist layers rise from the bottom edge, and open out as the page scrolls on. */
   .field {
     position: absolute;
@@ -51,6 +99,10 @@ const tones = ['text-gunmetal', 'text-iron', 'text-slate', 'text-pale', 'text-wh
     transform: translate(-50%, 30%) scale(calc(1 + var(--p, 0) * 0.5));
     overflow: visible;
     transform-origin: center;
+  }
+
+  .compact .field {
+    width: clamp(14rem, 28vw, 24rem);
   }
 
   :global(html.motion) .layer {
